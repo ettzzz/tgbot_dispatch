@@ -49,18 +49,22 @@ def baipiaov2ray(update: Update, _: CallbackContext): # _ is a must...
     date_str = ymd[4:]
     base_url = 'https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/{}.txt'.format(date_str)
     
-    r = requests.get(
-        url = base_url,
-        headers = browser_headers,
-        timeout = 5
-        )
-        
-    if r.text.startswith('404'):
-        text = '今天并没有可以白嫖的'
+    try:
+        r = requests.get(
+            url = base_url,
+            headers = browser_headers,
+            timeout = 5
+            )
+        if r.text.startswith('404'):
+            text = '今天并没有可以白嫖的'
+            link = ''
+        else:
+            text = '白嫖v2ray{}更新啦！'.format(date_str)
+            link = base_url
+    except:
+        text = '淦 requests出错了，赶紧debug'
         link = ''
-    else:
-        text = '白嫖v2ray{}更新啦！'.format(date_str)
-        link = base_url
+    
     
     html_text = '<a href="{}">{}</a>'.format(link, text)
     update.message.reply_html(html_text, disable_web_page_preview=True)
@@ -80,7 +84,8 @@ def main() -> None:
     dispatcher = updater.dispatcher
     
     # on different commands - answer in Telegram
-    # dispatcher.add_handler(CommandHandler("start", start))
+    # dispatcher.add_handler(CommandHandler("start", start_command))
+    # dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("v2ray", baipiaov2ray))
     # TODO:
         # raining bot /rain
