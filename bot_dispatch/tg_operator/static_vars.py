@@ -24,11 +24,6 @@ EMPLOYEE_ROSTER = {
         'api_token': '764684634:AAHmOxQfMXIHog8q9qaj8Ji2v8SzHJZmt7U',
         'chat_id': ME
         },
-    'dqn_stock_bot': {
-        'description': 'report stock status and alert code error.',
-        'api_token': '1721852527:AAEbvQOV7g98VaQs9uUNjKwfv6xai6fGKgs',
-        'chat_id': ME
-        },
     }
 
 
