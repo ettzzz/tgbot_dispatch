@@ -16,7 +16,7 @@ import requests
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-from static_vars import BASE_HEADERS, EMPLOYEE_ROSTER
+from .static_vars import BASE_HEADERS, EMPLOYEE_ROSTER
 
 # Enable logging
 logging.basicConfig(
