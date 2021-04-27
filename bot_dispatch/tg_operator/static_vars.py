@@ -6,7 +6,7 @@ Created on Sat Apr 17 10:21:43 2021
 """
 
 ME = '476917241'
-ANOTHER_ME = ';'
+ANOTHER_ME = '1433361729'
 
 EMPLOYEE_ROSTER = {
     'probius': {
@@ -15,7 +15,7 @@ EMPLOYEE_ROSTER = {
         'chat_id': ME
         },
     'blog_notify_bot': {
-        'description': 'used for ettzzz.me but now it\'s now used for baipiao v2ray.',
+        'description': 'used for ettzzz.me but now it\'s now used for active interactions.',
         'api_token': '966629533:AAFJOn_J_EDEQZPcRftHdSEHHu38PtGxrPI',
         'chat_id': ME
         },
@@ -28,3 +28,6 @@ EMPLOYEE_ROSTER = {
 
 
 UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0'
+BASE_HEADERS = {
+    "User-Agent": UA
+}
