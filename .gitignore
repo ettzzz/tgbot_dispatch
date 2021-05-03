@@ -17,3 +17,6 @@ __pycache__/
 
 # MacOS temp file
 *.DS_Store
+
+# temp txt file, for now it is under /barnhouse
+*.txt

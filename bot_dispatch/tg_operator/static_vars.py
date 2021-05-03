@@ -4,6 +4,9 @@ Created on Sat Apr 17 10:21:43 2021
 
 @author: ert
 """
+import os
+
+ROOT = os.getcwd()
 
 ME = '476917241'
 ANOTHER_ME = '1433361729'

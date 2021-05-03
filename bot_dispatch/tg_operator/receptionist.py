@@ -16,7 +16,7 @@ import requests
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-from .static_vars import BASE_HEADERS, EMPLOYEE_ROSTER
+from .static_vars import BASE_HEADERS, EMPLOYEE_ROSTER, ROOT
 
 # Enable logging
 logging.basicConfig(
@@ -60,6 +60,9 @@ def baipiaov2ray(update: Update, _: CallbackContext): # _ is a must...
         else:
             text = '白嫖v2ray{}更新啦！'.format(date_str)
             link = base_url
+            with open(os.path.join(ROOT, 'barnhouse', 'latest_v2ray.txt'), 'w') as f_in:
+                f_in.write(r.text)
+
     except:
         text = '淦 requests出错了，赶紧debug'
         link = '/'
@@ -138,6 +141,8 @@ def we_are_open() -> None:
 
     dispatcher.add_handler(CommandHandler("v2ray", baipiaov2ray))
     dispatcher.add_handler(CommandHandler("rain", isitgoingtorain))
+    # dispatcher.add_handler(CommandHandler("hi", hi_there))
+    # TODO: hi_there 沙雕新闻、每日戳心、每日暖心
     # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
 
     updater.start_polling()
