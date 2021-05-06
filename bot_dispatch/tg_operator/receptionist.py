@@ -133,7 +133,7 @@ def isitgoingtorain(update: Update, _: CallbackContext):
 
 def stock_query_status(update, _):
     r = requests.get('{}/api_v1/query_status'.format(DQN_AGENT_HOST))
-    text = 'Query results: Profit: {}, Balance: {}, Asset: {}'.format(**r.json())
+    text = 'Query results: Profit: {profit}, Balance: {balance}, Asset: {asset}'.format(**r.json())
     update.message.replay_text(text)
 
 
