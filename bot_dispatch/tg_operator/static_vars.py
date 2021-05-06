@@ -34,3 +34,5 @@ UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/
 BASE_HEADERS = {
     "User-Agent": UA
 }
+
+DQN_AGENT_HOST = 'http://1.116.139.56:8006'

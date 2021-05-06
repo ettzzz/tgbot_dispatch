@@ -16,7 +16,7 @@ import requests
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-from .static_vars import BASE_HEADERS, EMPLOYEE_ROSTER, ROOT
+from .static_vars import BASE_HEADERS, EMPLOYEE_ROSTER, ROOT, DQN_AGENT_HOST
 
 # Enable logging
 logging.basicConfig(
@@ -131,6 +131,12 @@ def isitgoingtorain(update: Update, _: CallbackContext):
     update.message.reply_text(text)
 
 
+def stock_query_status(update, _):
+    r = requests.get('{}/api_v1/query_status'.format(DQN_AGENT_HOST))
+    text = 'Query results: Profit: {}, Balance: {}, Asset: {}'.format(**r.json())
+    update.message.replay_text(text)
+
+
 def echo(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(update.message.text)
 
@@ -141,7 +147,7 @@ def we_are_open() -> None:
 
     dispatcher.add_handler(CommandHandler("v2ray", baipiaov2ray))
     dispatcher.add_handler(CommandHandler("rain", isitgoingtorain))
-    # dispatcher.add_handler(CommandHandler("hi", hi_there))
+    dispatcher.add_handler(CommandHandler("status", stock_query_status))
     # TODO: hi_there 沙雕新闻、每日戳心、每日暖心
     # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
 
