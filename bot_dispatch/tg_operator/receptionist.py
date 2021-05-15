@@ -62,11 +62,9 @@ def baipiaov2ray(update: Update, _: CallbackContext): # _ is a must...
             link = base_url
             with open(os.path.join(ROOT, 'barnhouse', 'latest_v2ray.txt'), 'w') as f_in:
                 f_in.write(r.text)
-
     except:
         text = '淦 requests出错了，赶紧debug'
         link = '/'
-
 
     html_text = '<a href="{}">{}</a>'.format(link, text)
     update.message.reply_html(html_text, disable_web_page_preview=True)
@@ -133,8 +131,11 @@ def isitgoingtorain(update: Update, _: CallbackContext):
 
 def stock_query_status(update, _):
     r = requests.get('{}/api_v1/query_status'.format(DQN_AGENT_HOST))
-    text = 'Query results: Profit: {profit}, Balance: {balance}, Asset: {asset}'.format(**r.json())
-    update.message.reply_text(text)
+    update.message.reply_text(r.json()['msg'])
+
+def stock_reset_status(update, _):
+    r = requests.get('{}/api_v1/reset_status'.format(DQN_AGENT_HOST))
+    update.message.reply_text(r.json()['msg'])
 
 
 def echo(update: Update, _: CallbackContext) -> None:
@@ -148,6 +149,7 @@ def we_are_open() -> None:
     dispatcher.add_handler(CommandHandler("v2ray", baipiaov2ray))
     dispatcher.add_handler(CommandHandler("rain", isitgoingtorain))
     dispatcher.add_handler(CommandHandler("status", stock_query_status))
+    dispatcher.add_handler(CommandHandler("reset", stock_reset_status))
     # TODO: hi_there 沙雕新闻、每日戳心、每日暖心
     # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
 
