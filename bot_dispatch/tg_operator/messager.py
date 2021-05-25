@@ -15,8 +15,9 @@ def send_message(to, message_link, message_text):
         chat_id = EMPLOYEE_ROSTER[to]['chat_id']
         token = EMPLOYEE_ROSTER[to]['api_token']
     else:
-        return -1
-        
+        chat_id = to
+        token = EMPLOYEE_ROSTER['probius']['api_token']
+
     base_url = 'https://api.telegram.org/bot{}/sendMessage'.format(token)
     html_text = '<a href="{}">{}</a>'.format(message_link, message_text)
     params = {
@@ -25,14 +26,12 @@ def send_message(to, message_link, message_text):
         'disable_web_page_preview': 'True',
         'parse_mode': 'HTML'
         }
-    
+
     r = requests.get(
         base_url,
         params = params,
         headers = {'User-Agent': UA},
         timeout = 10
         )
-    
+
     return r.status_code
-
-
