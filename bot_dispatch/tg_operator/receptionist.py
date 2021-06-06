@@ -44,24 +44,35 @@ logger = logging.getLogger(__name__)
 
 def baipiaov2ray(update: Update, _: CallbackContext): # _ is a must...
     today = datetime.datetime.today()
-    ymd = str(today.year) + '%02d' % today.month + '%02d' % today.day
-    date_str = ymd[4:]
-    base_url = 'https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/{}.txt'.format(date_str)
-
+    yesterday = today + datetime.timedelta(-1)
+    today_str = '%02d' % today.month + '%02d' % today.day
+    yesterday_str = '%02d' % yesterday.month + '%02d' % yesterday.day
+    today_url = 'https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/{}.txt'.format(today_str)
+    yesterday_url = 'https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/{}.txt'.format(yesterday_str)
     try:
-        r = requests.get(
-            url = base_url,
+        rt = requests.get(
+            url = today_url,
             headers = BASE_HEADERS,
             timeout = 5
             )
-        if r.text.startswith('404'):
+        ry = requests.get(
+            url = yesterday_url,
+            headers = BASE_HEADERS,
+            timeout = 5
+            )
+        if not rt.text.startswith('404'):
+            text = '白嫖v2ray{}更新啦！'.format(today_str)
+            link = today_url
+            with open(os.path.join(ROOT, 'barnhouse', 'latest_v2ray.txt'), 'w') as f_in:
+                f_in.write(rt.text)
+        elif not ry.text.startswith('404'):
+            text = '白嫖v2ray{}更新啦！'.format(yesterday_str)
+            link = yesterday_url
+            with open(os.path.join(ROOT, 'barnhouse', 'latest_v2ray.txt'), 'w') as f_in:
+                f_in.write(ry.text)
+        else:
             text = '今天并没有可以白嫖的'
             link = '/'
-        else:
-            text = '白嫖v2ray{}更新啦！'.format(date_str)
-            link = base_url
-            with open(os.path.join(ROOT, 'barnhouse', 'latest_v2ray.txt'), 'w') as f_in:
-                f_in.write(r.text)
     except:
         text = '淦 requests出错了，赶紧debug'
         link = '/'
