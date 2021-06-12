@@ -35,4 +35,4 @@ BASE_HEADERS = {
     "User-Agent": UA
 }
 
-DQN_AGENT_HOST = 'http://1.116.139.56:8006'
+DQN_AGENT_HOST = 'http://82.157.178.246:7704'
