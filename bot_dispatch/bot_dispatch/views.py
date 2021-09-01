@@ -8,7 +8,7 @@ from django.http import HttpResponse
 
 from tg_operator.messager import send_message
 from tg_operator.receptionist import we_are_open
-from tg_operator.static_vars import ROOT
+from config.static_vars import ROOT
 
 class botMessageSender(APIView):
     def post(self, request):

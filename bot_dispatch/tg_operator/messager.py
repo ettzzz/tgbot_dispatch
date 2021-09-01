@@ -7,7 +7,7 @@ Created on Sat Apr 17 10:22:17 2021
 
 import requests
 
-from .static_vars import UA, EMPLOYEE_ROSTER
+from config.static_vars import UA, EMPLOYEE_ROSTER
 
 
 def send_message(to, message_link, message_text):

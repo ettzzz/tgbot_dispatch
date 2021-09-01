@@ -6,7 +6,7 @@ Created on Sat Apr 17 10:21:43 2021
 """
 import os
 
-ROOT = os.getcwd()
+ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 ME = '476917241'
 ANOTHER_ME = '1433361729'
