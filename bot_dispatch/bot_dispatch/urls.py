@@ -21,7 +21,7 @@ from . import views
 
 
 api_v1 = [
-    url('test', views.HelloDispatch.as_view(), name='test'),
+    url('hello_dispatch', views.HelloDispatch.as_view(), name='hello_dispatch'),
     url('send_message', views.botMessageSender.as_view(), name='send_message'),
     url('latest_v2ray', views.latestV2raySubscription.as_view(), name='latest_v2ray'),
 ]

@@ -13,7 +13,8 @@ from config.static_vars import ROOT
 
 class HelloDispatch(APIView):
     def get(self, request):
-        return Response({'msg': 'hello, this is bot dispatch, what can I do for ya?'})
+        res = {'msg': 'hello, this is bot dispatch, what can I do for ya?'}
+        return Response(res)
 
 
 class botMessageSender(APIView):
@@ -40,4 +41,4 @@ class latestV2raySubscription(APIView):
         return HttpResponse(res)
 
 
-we_are_open()
+# we_are_open()

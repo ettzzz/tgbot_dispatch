@@ -168,5 +168,5 @@ def we_are_open() -> None:
     # updater.idle()
 
 
-if __name__ == "__main__":
-    we_are_open()
+# if __name__ == "__main__":
+we_are_open()
