@@ -41,4 +41,4 @@ class latestV2raySubscription(APIView):
         return HttpResponse(res)
 
 
-# we_are_open()
+we_are_open()

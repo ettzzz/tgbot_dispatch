@@ -165,8 +165,9 @@ def we_are_open() -> None:
     # dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
 
     updater.start_polling()
+    # TIPS: Do NOT run this on different server
     # updater.idle()
 
 
-# if __name__ == "__main__":
-we_are_open()
+if __name__ == "__main__":
+    we_are_open()
