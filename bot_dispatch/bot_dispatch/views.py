@@ -10,6 +10,12 @@ from tg_operator.messager import send_message
 from tg_operator.receptionist import we_are_open
 from config.static_vars import ROOT
 
+
+class HelloDispatch(APIView):
+    def get(self, request):
+        return Response({'msg': 'hello, this is bot dispatch, what can I do for ya?'})
+
+
 class botMessageSender(APIView):
     def post(self, request):
         receiver = request.data['to']
