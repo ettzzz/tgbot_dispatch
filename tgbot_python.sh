@@ -9,7 +9,7 @@ kill_now(){
 }
 
 start_new(){
-    $conda_python_bin manager.py localhost:7710 >> ./tgbot.log 2>&1 & echo $! > $pid_file
+    $conda_python_bin manage.py runserver localhost:7710 >> ./tgbot.log 2>&1 & echo $! > $pid_file
 }
 
 option=$1
