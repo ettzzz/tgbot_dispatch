@@ -21,3 +21,5 @@ __pycache__/
 # temp txt file, for now it is under /barnhouse
 *.txt
 
+# any log
+*.log

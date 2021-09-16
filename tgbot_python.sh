@@ -4,12 +4,11 @@ pid_file="pids.tgbot"
 conda_python_bin="/root/miniconda3/envs/django/bin/python3"
 
 kill_now(){
-    # ps aux|grep fastapi|awk '{print $2}'|xargs kill -9
     cat $pid_file|xargs kill -9
 }
 
 start_new(){
-    $conda_python_bin manage.py runserver localhost:7710 >> ./tgbot.log 2>&1 & echo $! > $pid_file
+    $conda_python_bin ./bot_dispatch/manage.py runserver localhost:7710 >> ./tgbot.log 2>&1 & echo $! > $pid_file
 }
 
 option=$1
