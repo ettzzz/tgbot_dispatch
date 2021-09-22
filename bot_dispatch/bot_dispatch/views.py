@@ -6,37 +6,37 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpResponse
 
-from tg_operator.messager import send_message
+from app.messager import send_message
 from tg_operator.receptionist import we_are_open
 from config.static_vars import ROOT
 
 
 class HelloDispatch(APIView):
     def get(self, request):
-        res = {'msg': 'hello, this is bot dispatch, what can I do for ya?'}
+        res = {"msg": "hello, this is bot dispatch, what can I do for ya?"}
         return Response(res)
 
 
 class botMessageSender(APIView):
     def post(self, request):
-        receiver = request.data['to']
-        link = request.data['link']
-        text = request.data['text']
+        receiver = request.data["to"]
+        link = request.data["link"]
+        text = request.data["text"]
         status_code = send_message(receiver, link, text)
 
         if status_code == 200:
-            res = {'msg': 'message sent!'}
+            res = {"msg": "message sent!"}
         elif status_code == -1:
-            res = {'msg': 'receiver not in the roster!'}
+            res = {"msg": "receiver not in the roster!"}
         else:
-            res = {'msg': 'Failed!'}
+            res = {"msg": "Failed!"}
 
         return Response(res)
 
 
 class latestV2raySubscription(APIView):
     def get(self, request):
-        with open(os.path.join(ROOT, 'barnhouse', 'latest_v2ray.txt'), 'r') as f:
+        with open(os.path.join(ROOT, "barnhouse", "latest_v2ray.txt"), "r") as f:
             res = f.read()
         return HttpResponse(res)
 
