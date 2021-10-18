@@ -1,14 +1,16 @@
 #！/bin/bash
 
-pid_file="pids.tgbot"
-conda_python_bin="/$USER/miniconda3/envs/django/bin/python3"
+pid_file="./bot.pids"
+log_file="./bot.log"
+conda_python_bin="/home/$USER/miniconda3/envs/django/bin/python3"
 
 kill_now(){
     cat $pid_file|xargs kill -9
+    rm $log_file
 }
 
 start_new(){
-    $conda_python_bin ./bot_dispatch/manage.py runserver localhost:7710 >> ./tgbot.log 2>&1 & echo $! > $pid_file
+    $conda_python_bin ./bot_dispatch/manage.py runserver localhost:7710 >> $log_file 2>&1 & echo $! > $pid_file
 }
 
 option=$1
