@@ -5,5 +5,5 @@ simple application based on fastapi web service framework with python-telegram-b
 
 TODO:
 
-- [] re-read bot script examples, make it looks better
-- [] finish designed functions in bot_apis
+- [ ] re-read bot script examples, make it looks better
+- [ ] finish designed functions in bot_apis

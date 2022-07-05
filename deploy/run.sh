@@ -9,7 +9,7 @@ kill_now(){
 }
 
 start_new(){
-    uvicorn main:app --host 127.0.0.1 --port 7710 >> ./uvicorn.log 2>&1 & echo $! > $pid_file
+    uvicorn main:app --port 7710 >> ./uvicorn.log 2>&1 & echo $! > $pid_file
 }
 
 option=$1
