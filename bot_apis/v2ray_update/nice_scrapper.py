@@ -40,7 +40,7 @@ def call_nice_scrapper(update: Update, _: CallbackContext):  # _ is a must...
         r = _check_github_raw(date)
         if r is not None and r.status_code == 200:
             with open(os.path.join(ROOT, "_barnhouse", "v2ray.txt"), "w") as f:
-                f.write()
+                f.write(r.text)
             text = f"白嫖v2ray{date}更新啦！"
             break
         else:

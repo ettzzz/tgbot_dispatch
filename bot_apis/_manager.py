@@ -16,11 +16,17 @@ def echo(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(update.message.text)
 
 
+def helloworld(update: Update, context: CallbackContext):
+    update.message.reply_text("Hallo!")
+
+
 def create_interactive_updater():
     is_interactive = 1
     updater = Updater(BOT_INFO[is_interactive]["api_token"])
+    dispatcher = updater.dispatcher
 
-    updater.dispatcher.add_handler(CommandHandler("v2ray", call_nice_scrapper))
+    dispatcher.add_handler(CommandHandler("hi", helloworld))
+    dispatcher.add_handler(CommandHandler("v2ray", call_nice_scrapper))
 
     updater.start_polling()
     # updater.idle() ## only use this when you are on a IDE and have access to Internet
@@ -29,7 +35,8 @@ def create_interactive_updater():
 def create_automatic_updater():
     is_interactive = 0
     updater = Updater(BOT_INFO[is_interactive]["api_token"])
+    dispatcher = updater.dispatcher
 
-    # updater.dispatcher.add_handler(CommandHandler("v2ray", call_nice_scrapper))
+    dispatcher.add_handler(CommandHandler("hi", helloworld))
 
     updater.start_polling()
