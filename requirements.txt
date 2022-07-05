@@ -1,0 +1,5 @@
+#DO NOT USE SPYDER TO EDIT OTHER FILES
+fastapi==0.78.0
+python-telegram-bot==13.13
+requests==2.25.1
+uvicorn==0.15.0

@@ -1,16 +1,15 @@
-#！/bin/bash
 
-pid_file="./bot.pids"
-log_file="./bot.log"
-conda_python_bin="/home/$USER/miniconda3/envs/django/bin/python3"
+#！/bin/bash
+# DO NOT USE SPYDER TO EDIT SHELL FILES
+
+pid_file="pids.uvicorn"
 
 kill_now(){
-    cat $pid_file|xargs kill -9
-    rm $log_file
+    cat $pid_file|xargs sudo kill -9
 }
 
 start_new(){
-    $conda_python_bin ./bot_dispatch/manage.py runserver localhost:7710 >> $log_file 2>&1 & echo $! > $pid_file
+    uvicorn main:app --host 127.0.0.1 --port 7710 >> ./uvicorn.log 2>&1 & echo $! > $pid_file
 }
 
 option=$1

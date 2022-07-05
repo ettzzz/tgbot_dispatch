@@ -1,2 +1,9 @@
 # tgbot_dispatch
- scalable dispatch for telegram bot. privat usage
+
+simple application based on fastapi web service framework with python-telegram-bot to control some customized notifications.
+
+
+TODO:
+
+- [] re-read bot script examples, make it looks better
+- [] finish designed functions in bot_apis

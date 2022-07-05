@@ -1,4 +1,4 @@
-# Environments
+# Possible virtual environments
 .env
 .venv
 env/
@@ -7,19 +7,20 @@ ENV/
 env.bak/
 venv.bak/
 
-
 # Spyder project settings
 .spyproject
 
 # Python template
 __pycache__/
 
-
 # MacOS temp file
 *.DS_Store
 
 # temp txt file, for now it is under /barnhouse
-*.txt
+./_barnhouse/*.txt
 
 # any log
 *.log
+
+# private info
+private_vars.py
