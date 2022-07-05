@@ -31,14 +31,15 @@ def call_latest_v2ray():
 
 
 class postCallSendMessage(BaseModel):
+    is_ai: int
     text: str
     link: str
 
 
 @app.post(f"/{API_PREFIX}/send_message")
 def call_send_message(item: postCallSendMessage):
-    is_interactive = 1
-    bot_config = BOT_INFO[is_interactive]  ## must be interactive
+    is_interactive = 0 if item.is_ai == 0 else 1  ## default should be probius
+    bot_config = BOT_INFO[is_interactive]
     res = call_messager(
         api_token=bot_config["api_token"],
         chat_id=bot_config["chat_id"],
