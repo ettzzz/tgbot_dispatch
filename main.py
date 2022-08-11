@@ -6,11 +6,13 @@ Created on Tue Jul  5 10:07:00 2022
 @author: eee
 """
 
+import os
 
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from configs.static_vars import API_PREFIX, DEBUG
+from configs.static_vars import API_PREFIX, DEBUG, ROOT
+assert os.path.exists(os.path.join(ROOT, "configs", "private_vars.py")) "Woo! You missed private_vars.py~"
 from configs.private_vars import BOT_INFO
 from bot_apis import *
 

@@ -4,11 +4,13 @@ simple application based on fastapi web service framework with python-telegram-b
 
 ## how to use and deploy
 
+0. copy private_vars.py to ./configs/ from mac or linux base
 1. pip install -r ./requirements.txt
 2. sudo cp ./deploy/tgbot_nginx.conf /etc/nginx/conf.d/
 3. sudo apt install supervisor -y
 4. sudo cp ./deploy/tgbot_supervisor.conf /etc/supervisor/conf.d/
-5. sudo supervisorctl update all
+5. sudo systemctl restart nginx
+6. sudo supervisorctl update all
 
 ## TODO:
 
