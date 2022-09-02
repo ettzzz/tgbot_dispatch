@@ -7,19 +7,45 @@ Created on Tue Jul  5 10:07:00 2022
 """
 
 import os
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 from configs.static_vars import API_PREFIX, DEBUG, ROOT
-assert os.path.exists(os.path.join(ROOT, "configs", "private_vars.py")), "Woo! You missed private_vars.py~"
+
+_private_var_path = os.path.join(ROOT, "configs", "private_vars.py")
+assert os.path.exists(_private_var_path), "Woo! You missed private_vars.py~"
 from configs.private_vars import BOT_INFO
 from bot_apis import *
 
 # create_automatic_updater() ## probius
 create_interactive_updater()  ## maedchen
-
 app = FastAPI(debug=DEBUG)
+
+
+def automatic_forward_message(text, link="", is_interactive=0):
+    bot_config = BOT_INFO[is_interactive]
+    res = call_messager(
+        api_token=bot_config["api_token"],
+        chat_id=bot_config["chat_id"],
+        message_text=text,
+        message_link=link,
+    )
+    return res
+
+
+@app.on_event("startup")
+def init_scheduler():
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(
+        func=automatic_forward_message,
+        kwargs={"text": call_flight_reminder(), link: "", is_interactive: 0},
+        trigger="cron",
+        day="5",
+        hour=6,
+    )
+    scheduler.start()
 
 
 @app.get(f"/{API_PREFIX}/helloworld")
@@ -41,11 +67,6 @@ class postCallSendMessage(BaseModel):
 @app.post(f"/{API_PREFIX}/send_message")
 def call_send_message(item: postCallSendMessage):
     is_interactive = 0 if item.is_ai == 0 else 1  ## default should be probius
-    bot_config = BOT_INFO[is_interactive]
-    res = call_messager(
-        api_token=bot_config["api_token"],
-        chat_id=bot_config["chat_id"],
-        message_text=item.text,
-        message_link=item.link,
-    )
-    return res
+    text = item.text
+    link = item.link
+    return automatic_forward_message(text, link, is_interactive)
