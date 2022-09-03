@@ -40,7 +40,7 @@ def init_scheduler():
     scheduler = BackgroundScheduler()
     scheduler.add_job(
         func=automatic_forward_message,
-        kwargs={"text": call_flight_reminder(), link: "", is_interactive: 0},
+        kwargs={"text": call_flight_reminder(), "link": "", "is_interactive": 0},
         trigger="cron",
         day="5",
         hour=6,
