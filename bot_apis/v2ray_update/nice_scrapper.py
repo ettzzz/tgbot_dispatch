@@ -10,7 +10,9 @@ Created on Tue Jul  5 10:52:16 2022
 import os
 
 import requests
-from telegram.ext import CallbackContext
+
+# from telegram.ext import CallbackContext
+from telegram.ext import ContextTypes
 from telegram import Update
 
 from configs.static_vars import UA, ROOT
@@ -32,7 +34,8 @@ def _check_github_raw(date):
     return r
 
 
-def call_nice_scrapper(update: Update, _: CallbackContext):  # _ is a must...
+# def call_nice_scrapper(update: Update, _: CallbackContext):  # _ is a must...
+async def call_nice_scrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     today = get_today_date()
     text = "现在并没有可以白嫖的"
     for i in range(4):  ## check last 3 days:
@@ -47,7 +50,8 @@ def call_nice_scrapper(update: Update, _: CallbackContext):  # _ is a must...
             continue
 
     html_text = f'<a href="">{text}</a>'
-    update.message.reply_html(html_text, disable_web_page_preview=True)
+    # update.message.reply_html(html_text, disable_web_page_preview=True)
+    await update.message.reply_html(html_text, disable_web_page_preview=True)
 
 
 def call_get_latest_v2ray_file():
