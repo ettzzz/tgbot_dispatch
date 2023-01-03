@@ -19,8 +19,7 @@ assert os.path.exists(_private_var_path), "Woo! You missed private_vars.py~"
 from configs.private_vars import BOT_INFO
 from bot_apis import *
 
-# create_automatic_updater() ## probius
-create_interactive_updater()  ## maedchen
+
 app = FastAPI(debug=DEBUG)
 
 

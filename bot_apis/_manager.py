@@ -5,12 +5,19 @@ Created on Mon Apr 26 20:55:29 2021
 @author: ert
 """
 
+"""
+update on 2023-01-03
+this script only works under python-telegram-bot=13.13
+check manager.py for python-telegram-bot >= 20.x
+"""
+
 from telegram import Update
 from telegram.ext import CallbackContext, Updater, CommandHandler
 
 from configs.private_vars import BOT_INFO
 from .v2ray_update.nice_scrapper import call_nice_scrapper
 from .weather_query.weather_reminder import call_weather_reminder
+
 
 def echo(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(update.message.text)
