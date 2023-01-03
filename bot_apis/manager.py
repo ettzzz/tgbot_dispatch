@@ -45,8 +45,3 @@ def create_automatic_updater():
     application.add_handler(CommandHandler("hi", helloworld))
 
     application.run_polling()
-
-
-if __name__ == "__main__":
-    # create_automatic_updater() ## probius
-    create_interactive_updater()  ## maedchen
