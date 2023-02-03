@@ -21,6 +21,7 @@ from bot_apis import *
 
 
 app = FastAPI(debug=DEBUG)
+scheduler = BackgroundScheduler()
 
 
 def automatic_forward_message(text, link="", is_interactive=0):
@@ -34,17 +35,14 @@ def automatic_forward_message(text, link="", is_interactive=0):
     return res
 
 
-# @app.on_event("startup")
-# def init_scheduler():
-#     scheduler = BackgroundScheduler()
-#     scheduler.add_job(
-#         func=automatic_forward_message,
-#         kwargs={"text": call_flight_reminder(), "link": "", "is_interactive": 0},
-#         trigger="cron",
-#         day_of_week="fri",
-#         hour=6,
-#     )
-#     scheduler.start()
+@app.on_event("startup")
+def init_scheduler():
+    scheduler.add_job(
+        func=ccall_nga_bargain_scrapper,
+        trigger="cron",
+        hour=23,
+    )
+    scheduler.start()
 
 
 @app.get(f"/{API_PREFIX}/helloworld")
