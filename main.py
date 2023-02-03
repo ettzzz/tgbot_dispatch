@@ -38,7 +38,7 @@ def automatic_forward_message(text, link="", is_interactive=0):
 @app.on_event("startup")
 def init_scheduler():
     scheduler.add_job(
-        func=ccall_nga_bargain_scrapper,
+        func=call_nga_bargain_scrapper,
         trigger="cron",
         hour=23,
     )

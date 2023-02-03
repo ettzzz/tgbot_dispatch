@@ -13,7 +13,7 @@ from .v2ray_update.nice_scrapper import call_get_latest_v2ray_file
 from .v2ray_update.nice_scrapper import call_nice_scrapper
 from .nga_bargain.apis import call_nga_bargain_scrapper
 
-from ._manager import create_automatic_updater, create_interactive_updater
+from .manager import create_automatic_updater, create_interactive_updater
 
 __all__ = [
     "create_automatic_updater",
