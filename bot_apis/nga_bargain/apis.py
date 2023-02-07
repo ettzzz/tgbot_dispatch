@@ -53,9 +53,12 @@ def read_bargains(keywords=None):
                 p = f.read()
             temp = list()
             for r in p.split("\n"):
-                title, link = r.split("|")
-                if any(k in title for k in keywords):
-                    temp.append((title, link))
+                try:
+                    title, link = r.split("|")
+                    if any(k in title for k in keywords):
+                        temp.append((title, link))
+                except:
+                    continue
             pairs += temp
 
     return pairs, date
