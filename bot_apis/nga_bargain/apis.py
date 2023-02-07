@@ -8,7 +8,7 @@ Created on Fri Feb  3 16:02:12 2023
 
 import os
 
-from telegram.ext import ContextTypes
+from telegram.ext import ContextTypes, ConversationHandler
 from telegram import Update
 
 from configs.static_vars import ROOT
@@ -105,6 +105,9 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
         await update.message.reply_html(html_text, disable_web_page_preview=True)
         break
 
+    return ConversationHandler.END
+
 
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("hey, tell me keywords")
+    return 0

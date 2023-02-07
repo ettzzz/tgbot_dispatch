@@ -12,6 +12,7 @@ from telegram.ext import (
     Application,
     CommandHandler,
     MessageHandler,
+    ConversationHandler,
     ContextTypes,
     filters,
 )
@@ -36,10 +37,12 @@ def create_interactive_updater():
     application.add_handler(CommandHandler("v2ray", call_nice_scrapper))
     application.add_handler(CommandHandler("wetter", call_weather_reminder))
     application.add_handler(
-        [
-            CommandHandler("bargain", call_read_keywords),
-            MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains),
-        ]
+        ConversationHandler(
+            entry_points=[CommandHandler("bargain", call_read_keywords)],
+            states={
+                0: [MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains)]
+            },
+        )
     )
 
     application.run_polling()
