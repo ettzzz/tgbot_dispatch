@@ -13,6 +13,7 @@ from telegram.ext import (
     CommandHandler,
     MessageHandler,
     ContextTypes,
+    filters,
 )
 
 from configs.private_vars import BOT_INFO
@@ -34,9 +35,12 @@ def create_interactive_updater():
     application.add_handler(CommandHandler("hi", helloworld))
     application.add_handler(CommandHandler("v2ray", call_nice_scrapper))
     application.add_handler(CommandHandler("wetter", call_weather_reminder))
-    # application.add_handler(CommandHandler("newbkey", helloworld))
-    # application.add_handler(CommandHandler("curbkey", call_read_keywords))
-    application.add_handler(CommandHandler("bargain", call_read_bargains))
+    application.add_handler(
+        [
+            CommandHandler("bargain", call_read_keywords),
+            MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains),
+        ]
+    )
 
     application.run_polling()
 

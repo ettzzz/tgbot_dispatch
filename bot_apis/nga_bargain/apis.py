@@ -98,13 +98,13 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     # previous_keywords = read_keywords()
     # save_keywords(keywords)
 
-    bargains = read_bargains(keywords)
+    bargains, _ = read_bargains(keywords)
     html_text = ""
     for title, link in bargains:
-        html_text += f"<a href={link}>{title}</a>"
-        html_text += "<br>"
-    await update.message.reply_html(html_text, disable_web_page_preview=True)
+        html_text += f'<a href="{link}">{title}</a>'
+        await update.message.reply_html(html_text, disable_web_page_preview=True)
+        break
 
 
-async def call_read_keywords():
-    return
+async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("hey, tell me keywords")
