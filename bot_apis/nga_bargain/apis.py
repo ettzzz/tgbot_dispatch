@@ -93,23 +93,23 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     text.replace(",", " ")
     text.replace("，", " ")
     keywords = read_keywords()
-    print(text)
-    # keywords = text.split(" ")
-    # previous_keywords = read_keywords()
-    # save_keywords(keywords)
+    keywords = text.split(" ")
+    save_keywords(keywords)
 
     bargains, _ = read_bargains(keywords)
     html_text = ""
     for title, link in bargains:
         html_text += f'<a href="{link}">{title}</a>'
         await update.message.reply_html(html_text, disable_web_page_preview=True)
-        break
 
     return ConversationHandler.END
 
 
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("hey, tell me keywords")
+    previous_keywords = read_keywords()
+    p = " ".join(previous_keywords)
+    text = f"hey！请输入商品关键词，用空格隔开。\n上次关键词为：{p}"
+    await update.message.reply_text(text)
     return 0
 
 
