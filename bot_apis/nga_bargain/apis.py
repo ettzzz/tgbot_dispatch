@@ -99,7 +99,7 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     bargains, _ = read_bargains(keywords)
     html_text = ""
     for title, link in bargains:
-        html_text += f'<a href="{link}">{title}</a>'
+        html_text = f'<a href="{link}">{title}</a>'
         await update.message.reply_html(html_text, disable_web_page_preview=True)
 
     return ConversationHandler.END
