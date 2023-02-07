@@ -20,7 +20,11 @@ from telegram.ext import (
 from configs.private_vars import BOT_INFO
 from .v2ray_update.nice_scrapper import call_nice_scrapper
 from .weather_query.weather_reminder import call_weather_reminder
-from .nga_bargain.apis import call_read_bargains, call_read_keywords
+from .nga_bargain.apis import (
+    call_read_bargains,
+    call_read_keywords,
+    call_bargain_cancel,
+)
 
 
 async def helloworld(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -42,6 +46,7 @@ def create_interactive_updater():
             states={
                 0: [MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains)]
             },
+            fallbacks=[CommandHandler("cancel", call_bargain_cancel)],
         )
     )
 

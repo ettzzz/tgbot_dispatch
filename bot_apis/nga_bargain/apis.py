@@ -111,3 +111,14 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("hey, tell me keywords")
     return 0
+
+
+async def call_bargain_cancel(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
+    await update.message.reply_text(
+        "Bye! I hope we can talk again some day."
+        # , reply_markup=ReplyKeyboardRemove()
+    )
+
+    return ConversationHandler.END
