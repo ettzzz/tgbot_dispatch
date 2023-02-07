@@ -11,6 +11,7 @@ from telegram import Update
 from telegram.ext import (
     Application,
     CommandHandler,
+    MessageHandler,
     ContextTypes,
 )
 
@@ -35,7 +36,7 @@ def create_interactive_updater():
     application.add_handler(CommandHandler("wetter", call_weather_reminder))
     # application.add_handler(CommandHandler("newbkey", helloworld))
     # application.add_handler(CommandHandler("curbkey", call_read_keywords))
-    # application.add_handler(CommandHandler("curb", call_read_bargains))
+    application.add_handler(CommandHandler("bargain", call_read_bargains))
 
     application.run_polling()
 

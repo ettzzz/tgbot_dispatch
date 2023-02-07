@@ -13,6 +13,7 @@ from telegram import Update
 
 from configs.static_vars import ROOT
 from scrapper import ngaBargainScrapper
+from utils.datetime_tools import struct_datestr
 
 
 dir_path = os.path.join(ROOT, "_barnhouse")
@@ -41,9 +42,10 @@ def save_bargains(pair, date):
             f.write(f"{title}|{link}\n")
 
 
-def read_bargains():
+def read_bargains(keywords=None):
     pairs = list()
-    keywords = read_keywords()
+    if keywords is None:
+        keywords = read_keywords()
     for file_name in os.listdir(dir_path):
         if file_name.startswith("ngabargainpair"):
             date = file_name.split("_")[1].split(".txt")[0]
@@ -59,6 +61,18 @@ def read_bargains():
     return pairs, date
 
 
+def _barnhouse_check(date, days_backward=3):
+    struct_d = struct_datestr(date)
+    for file_name in os.listdir(dir_path):
+        if file_name.startswith("ngabargainpair"):
+            d = file_name.split("_")[1].split(".txt")[0]
+            sd = struct_datestr(d)
+            if (struct_d - sd).days >= days_backward:
+                file_path = os.path.join(dir_path, file_name)
+                os.remove(file_path)
+    return
+
+
 def call_nga_bargain_scrapper():
     nga_scrapper = ngaBargainScrapper()
     r = nga_scrapper.get_raw()
@@ -68,15 +82,25 @@ def call_nga_bargain_scrapper():
     if len(pair) == 0:
         return  # something wrong, TODO: gibber say something
     save_bargains(pair, date)
+    _barnhouse_check(date)
 
 
 async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text
+    text.replace(",", " ")
+    text.replace("，", " ")
+    keywords = read_keywords()
+    print(text)
+    # keywords = text.split(" ")
+    # previous_keywords = read_keywords()
+    # save_keywords(keywords)
 
-    # bargains = read_bargains()
-    # html_text = f'<a href="">{text}</a>'
-    # # update.message.reply_html(html_text, disable_web_page_preview=True)
-    # await update.message.reply_html(html_text, disable_web_page_preview=True)
-    return
+    bargains = read_bargains(keywords)
+    html_text = ""
+    for title, link in bargains:
+        html_text += f"<a href={link}>{title}</a>"
+        html_text += "<br>"
+    await update.message.reply_html(html_text, disable_web_page_preview=True)
 
 
 async def call_read_keywords():

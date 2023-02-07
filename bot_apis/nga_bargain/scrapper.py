@@ -61,7 +61,7 @@ class ngaBargainScrapper:
 
         ts = datetime.datetime.now()
         year = ts.year
-        date = "f" + datetime.datetime.strftime(ts, "%Y-%m-%d")
+        date = datetime.datetime.strftime(ts, "%Y-%m-%d")
         for s in tables[0].contents:
             s = str(s)
             if s.startswith("[color=crimson]"):
