@@ -12,7 +12,7 @@ from telegram.ext import ContextTypes
 from telegram import Update
 
 from configs.static_vars import ROOT
-from scrapper import ngaBargainScrapper
+from bot_apis.nga_bargain.scrapper import ngaBargainScrapper
 from utils.datetime_tools import struct_datestr
 
 
