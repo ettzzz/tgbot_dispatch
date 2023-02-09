@@ -109,6 +109,9 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     save_keywords(keywords)
     bargains, _ = read_bargains(keywords)
 
+    query = update.callback_query
+    await query.answer()
+
     keyboard = [
         [
             InlineKeyboardButton("prev", callback_data="p"),
@@ -118,9 +121,10 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     # Send message with text and appended InlineKeyboard
-    await update.message.reply_text(
-        "Start handler, Choose a route", reply_markup=reply_markup
-    )
+    # await update.message.reply_text(
+    #     "Start handler, Choose a route", reply_markup=reply_markup
+    # )
+    await query.edit_message_text(text="下次再来", reply_markup=reply_markup)
     # Tell ConversationHandler that we're in state `FIRST` now
     return START_ROUTES
 

@@ -45,8 +45,10 @@ def create_interactive_updater():
         ConversationHandler(
             entry_points=[CommandHandler("bargain", call_read_keywords)],
             states={
-                # 0: [MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains)]
-                0: [CallbackQueryHandler(call_read_bargains, pattern="")],
+                0: [
+                    MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains)
+                ],
+                # 0: [CallbackQueryHandler(call_read_bargains)],
                 1: [CallbackQueryHandler(call_bargain_cancel)],
             },
             # fallbacks=[CommandHandler("cancel", call_bargain_cancel)],
