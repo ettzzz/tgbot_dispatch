@@ -9,7 +9,7 @@ Created on Fri Feb  3 16:02:12 2023
 import os
 
 from telegram.ext import ContextTypes, ConversationHandler
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 from configs.static_vars import ROOT
 from bot_apis.nga_bargain.scrapper import ngaBargainScrapper
@@ -88,21 +88,8 @@ def call_nga_bargain_scrapper():
     _barnhouse_check(date)
 
 
-async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
-    text.replace(",", " ")
-    text.replace("，", " ")
-    keywords = read_keywords()
-    keywords = text.split(" ")
-    save_keywords(keywords)
-
-    bargains, _ = read_bargains(keywords)
-    html_text = ""
-    for title, link in bargains:
-        html_text = f'<a href="{link}">{title}</a>'
-        await update.message.reply_html(html_text, disable_web_page_preview=True)
-
-    return ConversationHandler.END
+# Stages
+START_ROUTES, END_ROUTES = range(2)
 
 
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -110,15 +97,46 @@ async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE)
     p = " ".join(previous_keywords)
     text = f"hey！请输入商品关键词，用空格隔开。\n上次关键词为：{p}"
     await update.message.reply_text(text)
-    return 0
+    return START_ROUTES
+
+
+async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text
+    text.replace(",", " ")
+    text.replace("，", " ")
+    keywords = read_keywords()
+    keywords = text.split(" ")
+    save_keywords(keywords)
+    bargains, _ = read_bargains(keywords)
+
+    keyboard = [
+        [
+            InlineKeyboardButton("prev", callback_data="p"),
+            InlineKeyboardButton("next", callback_data="n"),
+            InlineKeyboardButton("end", callback_data="e"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    # Send message with text and appended InlineKeyboard
+    await update.message.reply_text(
+        "Start handler, Choose a route", reply_markup=reply_markup
+    )
+    # Tell ConversationHandler that we're in state `FIRST` now
+    return START_ROUTES
+
+    # html_text = ""
+    # for title, link in bargains:
+    #     html_text = f'<a href="{link}">{title}</a>'
+    #     await update.message.reply_html(html_text, disable_web_page_preview=True)
+
+    # return ConversationHandler.END
 
 
 async def call_bargain_cancel(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
-    await update.message.reply_text(
-        "Bye! I hope we can talk again some day."
-        # , reply_markup=ReplyKeyboardRemove()
-    )
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(text="下次再来")
 
     return ConversationHandler.END

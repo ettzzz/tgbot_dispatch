@@ -13,6 +13,7 @@ from telegram.ext import (
     CommandHandler,
     MessageHandler,
     ConversationHandler,
+    CallbackQueryHandler,
     ContextTypes,
     filters,
 )
@@ -44,9 +45,12 @@ def create_interactive_updater():
         ConversationHandler(
             entry_points=[CommandHandler("bargain", call_read_keywords)],
             states={
-                0: [MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains)]
+                # 0: [MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains)]
+                0: [CallbackQueryHandler(call_read_bargains, pattern="")],
+                1: [CallbackQueryHandler(call_bargain_cancel)],
             },
-            fallbacks=[CommandHandler("cancel", call_bargain_cancel)],
+            # fallbacks=[CommandHandler("cancel", call_bargain_cancel)],
+            fallbacks=[CommandHandler("bargain", call_read_keywords)],
         )
     )
 
