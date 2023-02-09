@@ -17,7 +17,8 @@ from utils.datetime_tools import struct_datestr
 
 
 dir_path = os.path.join(ROOT, "_barnhouse")
-
+START_ROUTES, END_ROUTES = range(2) # Stages 0, 1
+STEP = 5
 
 def save_bargains(pair, date):
     file_name = f"ngabargainpair_{date}.txt"
@@ -26,10 +27,8 @@ def save_bargains(pair, date):
             f.write(f"{title}|{link}\n")
 
 
-def read_bargains(keywords=None):
+def read_bargains(keywords):
     pairs = list()
-    if keywords is None:
-        keywords = read_keywords()
     for file_name in os.listdir(dir_path):
         if file_name.startswith("ngabargainpair"):
             date = file_name.split("_")[1].split(".txt")[0]
@@ -93,10 +92,6 @@ def call_nga_bargain_scrapper():
         return  # something wrong, TODO: gibber say something
     save_bargains(pair, date)
     _barnhouse_check(date)
-
-
-START_ROUTES, END_ROUTES = range(2) # Stages 0, 1
-STEP = 5
 
 
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
