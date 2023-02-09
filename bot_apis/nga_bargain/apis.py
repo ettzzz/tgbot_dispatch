@@ -122,9 +122,9 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
 async def call_next_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    _mark, buylist, start = query.data.split("|")
-    prev_start = int(start)
-    md_text = generate_md_text(buylist=buylist, idx=prev_start+STEP, step=STEP)
+    _mark, buylist, prev_start = query.data.split("|")
+    start = int(start) + STEP
+    md_text = generate_md_text(buylist=buylist, idx=start, step=STEP)
 
     keyboard = [
         [
@@ -142,8 +142,8 @@ async def call_prev_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     query = update.callback_query
     await query.answer()
     _mark, buylist, start = query.data.split("|")
-    prev_start = int(start)
-    md_text = generate_md_text(buylist=buylist, idx=prev_start-STEP, step=STEP)
+    start = int(start) - STEP
+    md_text = generate_md_text(buylist=buylist, idx=start, step=STEP)
 
     keyboard = [
         [
