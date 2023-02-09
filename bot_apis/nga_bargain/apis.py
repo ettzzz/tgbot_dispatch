@@ -123,6 +123,7 @@ async def call_next_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     query = update.callback_query
     await query.answer()
     _mark, buylist, start = query.data.split("|")
+    start = int(start)
     md_text = generate_md_text(buylist=buylist, idx=start, step=STEP)
 
     keyboard = [
@@ -133,7 +134,7 @@ async def call_next_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
         ],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(md_text, reply_markup=reply_markup)
+    await query.edit_message_text(text=md_text, reply_markup=reply_markup)
     return START_ROUTES
 
 
@@ -141,6 +142,7 @@ async def call_prev_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     query = update.callback_query
     await query.answer()
     _mark, buylist, start = query.data.split("|")
+    start = int(start)
     md_text = generate_md_text(buylist=buylist, idx=start, step=-STEP)
 
     keyboard = [
@@ -151,7 +153,7 @@ async def call_prev_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
         ],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(md_text, reply_markup=reply_markup)
+    await query.edit_message_text(text=md_text, reply_markup=reply_markup)
     return START_ROUTES
 
 
@@ -160,5 +162,6 @@ async def call_end_bargains(
 ) -> int:
     query = update.callback_query
     await query.answer()
+    query.edit_message_text(text="欢迎下次再来")
     return ConversationHandler.END
 
