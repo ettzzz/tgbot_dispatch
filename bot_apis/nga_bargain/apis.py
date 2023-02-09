@@ -76,6 +76,32 @@ def _barnhouse_check(date, days_backward=3):
     return
 
 
+
+def generate_md_text(buylist, idx=0, step=5, save_keywords=False):
+    keywords = buylist.split(" ")
+    if save_keywords is True:
+        save_keywords(keywords)
+    bargains, _ = read_bargains(keywords)
+
+    if idx <= 0:
+        idx = 0
+    if idx >= len(bargains):
+        idx = len(bargains) - 1
+
+    start = min(idx, idx+step)
+    end = max(idx, idx+step)
+    # if start < abs(step): # lock down to first page
+    #     start = 0
+    #     end = abs(step)
+
+    md_text = f"当前显示{idx+1}/{len(bargains)}个商品\n"
+    for title, link in bargains[start:end]:
+        md_text += f"**[{title}]({link})**\n"
+        md_text += "\n"
+
+    return buylist, md_text, len(bargains)
+
+
 def call_nga_bargain_scrapper():
     nga_scrapper = ngaBargainScrapper()
     r = nga_scrapper.get_raw()
@@ -88,12 +114,7 @@ def call_nga_bargain_scrapper():
     _barnhouse_check(date)
 
 
-# Stages
-START_ROUTES, END_ROUTES = range(2)
-
-
-def _gen_md_text():
-    return
+START_ROUTES, END_ROUTES = range(2) # Stages 0, 1
 
 
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -105,20 +126,16 @@ async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 
 async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
-    text.replace(",", " ").replace("，", " ")
+    buylist = update.message.text
+    buylist.replace(",", " ").replace("，", " ")
 
-    keywords = text.split(" ")
-    save_keywords(keywords)
-    bargains, _ = read_bargains(keywords)
-
-    md_text = f"**一共有{len(bargains)}个商品**"
+    _, md_text, total = generate_md_text(buylist=buylist, idx=0, step=5, save_keywords=True)
 
     keyboard = [
         [
-            InlineKeyboardButton("prev", callback_data="p|text|cid|ttp|ttc"),
-            InlineKeyboardButton("next(6)", callback_data="n|text|cid|ttp|ttc"),
-            InlineKeyboardButton("end", callback_data="e|text|cid|ttp|ttc"),
+            InlineKeyboardButton("prev", callback_data=f"p|{md_text}|{total}"),
+            InlineKeyboardButton("next", callback_data=f"n|{md_text}|{total}"),
+            InlineKeyboardButton("end", callback_data="e"),
         ],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -127,12 +144,6 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     )
     # Tell ConversationHandler that we're in state `FIRST` now
     return START_ROUTES
-
-    html_text = ""
-    for title, link in bargains[start:]:
-        html_text = f'<a href="{link}">{title}</a>'
-        await update.message.reply_html(html_text, disable_web_page_preview=True)
-
     # return ConversationHandler.END
 
 
@@ -142,8 +153,8 @@ async def call_next_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     keyboard = [
         [
-            InlineKeyboardButton("prev(1)", callback_data="p|text|cid|ttp|ttc"),
-            InlineKeyboardButton("next(5)", callback_data="n|text|cid|ttp|ttc"),
+            InlineKeyboardButton("prev", callback_data="p|text|cid|ttp|ttc"),
+            InlineKeyboardButton("next", callback_data="n|text|cid|ttp|ttc"),
             InlineKeyboardButton("end", callback_data="e|text|cid|ttp|ttc"),
         ],
     ]

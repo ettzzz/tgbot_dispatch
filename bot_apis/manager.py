@@ -49,11 +49,11 @@ def create_interactive_updater():
             states={
                 0: [
                     MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains),
-                    CallbackQueryHandler(call_next_bargains, pattern="^n$"),
-                    CallbackQueryHandler(call_prev_bargains, pattern="^p$"),
+                    CallbackQueryHandler(call_next_bargains, pattern="^n"),
+                    CallbackQueryHandler(call_prev_bargains, pattern="^p"),
                 ],
                 # 0: [CallbackQueryHandler(call_read_bargains)],
-                1: [CallbackQueryHandler(call_bargain_cancel, pattern="^e$")],
+                1: [CallbackQueryHandler(call_bargain_cancel, pattern="^e")],
             },
             # fallbacks=[CommandHandler("cancel", call_bargain_cancel)],
             fallbacks=[CommandHandler("bargain", call_read_keywords)],
