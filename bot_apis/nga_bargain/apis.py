@@ -92,6 +92,10 @@ def call_nga_bargain_scrapper():
 START_ROUTES, END_ROUTES = range(2)
 
 
+def _gen_md_text():
+    return
+
+
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
     previous_keywords = read_keywords()
     p = " ".join(previous_keywords)
@@ -102,33 +106,32 @@ async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
-    text.replace(",", " ")
-    text.replace("，", " ")
-    keywords = read_keywords()
+    text.replace(",", " ").replace("，", " ")
+
     keywords = text.split(" ")
     save_keywords(keywords)
     bargains, _ = read_bargains(keywords)
+
     md_text = f"**一共有{len(bargains)}个商品**"
 
     keyboard = [
         [
-            InlineKeyboardButton("prev", callback_data="p"),
-            InlineKeyboardButton("next", callback_data="n"),
-            InlineKeyboardButton("end", callback_data="e"),
-        ]
+            InlineKeyboardButton("prev", callback_data="p|text|cid|ttp|ttc"),
+            InlineKeyboardButton("next(6)", callback_data="n|text|cid|ttp|ttc"),
+            InlineKeyboardButton("end", callback_data="e|text|cid|ttp|ttc"),
+        ],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    # Send message with text and appended InlineKeyboard
     await update.message.reply_text(
         md_text, reply_markup=reply_markup, parse_mode="MarkdownV2"
     )
     # Tell ConversationHandler that we're in state `FIRST` now
     return START_ROUTES
 
-    # html_text = ""
-    # for title, link in bargains:
-    #     html_text = f'<a href="{link}">{title}</a>'
-    #     await update.message.reply_html(html_text, disable_web_page_preview=True)
+    html_text = ""
+    for title, link in bargains[start:]:
+        html_text = f'<a href="{link}">{title}</a>'
+        await update.message.reply_html(html_text, disable_web_page_preview=True)
 
     # return ConversationHandler.END
 
@@ -136,7 +139,16 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
 async def call_next_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    await query.edit_message_text(text="next page")
+
+    keyboard = [
+        [
+            InlineKeyboardButton("prev(1)", callback_data="p|text|cid|ttp|ttc"),
+            InlineKeyboardButton("next(5)", callback_data="n|text|cid|ttp|ttc"),
+            InlineKeyboardButton("end", callback_data="e|text|cid|ttp|ttc"),
+        ],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text(text="next page", reply_markup=reply_markup)
 
     return START_ROUTES
 
@@ -147,6 +159,10 @@ async def call_prev_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await query.edit_message_text(text="prev page")
     return START_ROUTES
     # if?
+
+
+async def call_end_bargains():
+    return
 
 
 async def call_bargain_cancel(
