@@ -108,9 +108,7 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     keywords = text.split(" ")
     save_keywords(keywords)
     bargains, _ = read_bargains(keywords)
-
-    query = update.callback_query
-    await query.answer()
+    md_text = f"**一共有{len(bargains)}个商品**"
 
     keyboard = [
         [
@@ -121,10 +119,9 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     # Send message with text and appended InlineKeyboard
-    # await update.message.reply_text(
-    #     "Start handler, Choose a route", reply_markup=reply_markup
-    # )
-    await query.edit_message_text(text="下次再来", reply_markup=reply_markup)
+    await update.message.reply_text(
+        md_text, reply_markup=reply_markup, parse_mode="MarkdownV2"
+    )
     # Tell ConversationHandler that we're in state `FIRST` now
     return START_ROUTES
 
@@ -134,6 +131,22 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     #     await update.message.reply_html(html_text, disable_web_page_preview=True)
 
     # return ConversationHandler.END
+
+
+async def call_next_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(text="next page")
+
+    return START_ROUTES
+
+
+async def call_prev_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(text="prev page")
+    return START_ROUTES
+    # if?
 
 
 async def call_bargain_cancel(

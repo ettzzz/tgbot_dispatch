@@ -25,6 +25,8 @@ from .nga_bargain.apis import (
     call_read_bargains,
     call_read_keywords,
     call_bargain_cancel,
+    call_next_bargains,
+    call_prev_bargains,
 )
 
 
@@ -46,10 +48,12 @@ def create_interactive_updater():
             entry_points=[CommandHandler("bargain", call_read_keywords)],
             states={
                 0: [
-                    MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains)
+                    MessageHandler(filters.TEXT & ~filters.COMMAND, call_read_bargains),
+                    CallbackQueryHandler(call_next_bargains, pattern="^n$"),
+                    CallbackQueryHandler(call_prev_bargains, pattern="^p$"),
                 ],
                 # 0: [CallbackQueryHandler(call_read_bargains)],
-                1: [CallbackQueryHandler(call_bargain_cancel)],
+                1: [CallbackQueryHandler(call_bargain_cancel, pattern="^e$")],
             },
             # fallbacks=[CommandHandler("cancel", call_bargain_cancel)],
             fallbacks=[CommandHandler("bargain", call_read_keywords)],
