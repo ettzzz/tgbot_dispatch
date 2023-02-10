@@ -29,23 +29,21 @@ def save_bargains(pair, date):
 
 
 def read_bargains(keywords):
-    pairs = list()
+    pairs = set()
     for file_name in os.listdir(dir_path):
         if file_name.startswith("ngabargainpair"):
             date = file_name.split("_")[1].split(".txt")[0]
             with open(os.path.join(dir_path, file_name), "r") as f:
                 p = f.read()
-            temp = set()
             for r in p.split("\n"):
                 try:
                     title, link = r.split("|")
-                    if any(k in title for k in keywords):
-                        temp.add((title, link))
+                    if any(k.strip() in title for k in keywords):
+                        pairs.add((title, link))
                 except:
                     continue
-            pairs += list(temp)
 
-    return pairs, date
+    return list(pairs), date
 
 
 def _barnhouse_check(date, days_backward=3):
@@ -74,10 +72,13 @@ def generate_md_text(buylist, idx=0, step=STEP):
         start = total - total % step
         end = total - 1
 
-    md_text = f"当前显示{idx+1}/{total}个商品\n"
-    for title, link in bargains[start:end]:
-        md_text += "\n"
-        md_text += f"{title}({link})\n"
+    if total == 0:
+        md_text = "暂无此商品打折记录"
+    else:
+        md_text = f"当前显示{idx+1}/{total}个商品\n"
+        for title, link in bargains[start:end]:
+            md_text += "\n"
+            md_text += f"{title}({link})\n"
 
     return md_text, start
 
@@ -95,7 +96,7 @@ def call_nga_bargain_scrapper():
 
 
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("你好！请输入打折商品关键词，用空格隔开。")
+    await update.message.reply_text("你好！请输入打折商品关键词，多个请用空格隔开。")
     return START_ROUTES
 
 
