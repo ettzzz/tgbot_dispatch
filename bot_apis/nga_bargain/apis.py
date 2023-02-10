@@ -17,8 +17,9 @@ from utils.datetime_tools import struct_datestr
 
 
 dir_path = os.path.join(ROOT, "_barnhouse")
-START_ROUTES, END_ROUTES = range(2) # Stages 0, 1
+START_ROUTES, END_ROUTES = range(2)  # Stages 0, 1
 STEP = 5
+
 
 def save_bargains(pair, date):
     file_name = f"ngabargainpair_{date}.txt"
@@ -34,15 +35,15 @@ def read_bargains(keywords):
             date = file_name.split("_")[1].split(".txt")[0]
             with open(os.path.join(dir_path, file_name), "r") as f:
                 p = f.read()
-            temp = list()
+            temp = set()
             for r in p.split("\n"):
                 try:
                     title, link = r.split("|")
                     if any(k in title for k in keywords):
-                        temp.append((title, link))
+                        temp.add((title, link))
                 except:
                     continue
-            pairs += temp
+            pairs += list(temp)
 
     return pairs, date
 
@@ -59,27 +60,26 @@ def _barnhouse_check(date, days_backward=3):
     return
 
 
-
 def generate_md_text(buylist, idx=0, step=STEP):
     keywords = buylist.split(" ")
     bargains, _ = read_bargains(keywords)
     total = len(bargains)
 
-    start = min(idx, idx+step)
-    end = max(idx, idx+step)
+    start = min(idx, idx + step)
+    end = max(idx, idx + step)
     if start <= 0:
         start = 0
         end = abs(step)
     if start == total - 1:
-        start = total - total%step
+        start = total - total % step
         end = total - 1
 
     md_text = f"当前显示{idx+1}/{total}个商品\n"
     for title, link in bargains[start:end]:
         md_text += "\n"
         md_text += f"{title}({link})\n"
-        
-    return md_text
+
+    return md_text, start
 
 
 def call_nga_bargain_scrapper():
@@ -95,7 +95,7 @@ def call_nga_bargain_scrapper():
 
 
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("hey！请输入商品关键词，用空格隔开。")
+    await update.message.reply_text("你好！请输入打折商品关键词，用空格隔开。")
     return START_ROUTES
 
 
@@ -116,15 +116,14 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await update.message.reply_text(md_text, reply_markup=reply_markup)
     # Tell ConversationHandler that we're in state `FIRST` now
     return START_ROUTES
-    
 
 
 async def call_next_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     _mark, buylist, prev_start = query.data.split("|")
-    start = int(start) + STEP
-    md_text = generate_md_text(buylist=buylist, idx=start, step=STEP)
+    start = int(prev_start) + STEP
+    md_text, start = generate_md_text(buylist=buylist, idx=start, step=STEP)
 
     keyboard = [
         [
@@ -141,9 +140,9 @@ async def call_next_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
 async def call_prev_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    _mark, buylist, start = query.data.split("|")
-    start = int(start) - STEP
-    md_text = generate_md_text(buylist=buylist, idx=start, step=STEP)
+    _mark, buylist, prev_start = query.data.split("|")
+    start = int(prev_start) - STEP
+    md_text, start = generate_md_text(buylist=buylist, idx=start, step=STEP)
 
     keyboard = [
         [
@@ -157,11 +156,8 @@ async def call_prev_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     return START_ROUTES
 
 
-async def call_end_bargains(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-) -> int:
+async def call_end_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
-    query.edit_message_text(text="欢迎下次再来")
+    await query.edit_message_text(text="下次再来~")
     return ConversationHandler.END
-
