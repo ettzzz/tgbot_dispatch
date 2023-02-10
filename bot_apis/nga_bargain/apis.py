@@ -68,14 +68,14 @@ def generate_md_text(buylist, idx=0, step=STEP):
     if start <= 0:
         start = 0
         end = abs(step)
-    if start == total - 1:
+    if start > total - 1:
         start = total - total % step
-        end = total - 1
+        end = total
 
     if total == 0:
         md_text = "暂无此商品打折记录"
     else:
-        md_text = f"当前显示{idx+1}/{total}个商品\n"
+        md_text = f"当前显示{start+1}/{total}个商品\n"
         for title, link in bargains[start:end]:
             md_text += "\n"
             md_text += f"{title}({link})\n"
