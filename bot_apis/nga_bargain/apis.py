@@ -103,7 +103,7 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     buylist = update.message.text
     buylist.replace(",", " ").replace("，", " ")
 
-    md_text = generate_md_text(buylist=buylist, idx=0, step=STEP)
+    md_text, _ = generate_md_text(buylist=buylist, idx=0, step=STEP)
 
     keyboard = [
         [
@@ -159,5 +159,5 @@ async def call_prev_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
 async def call_end_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     query = update.callback_query
     await query.answer()
-    await query.edit_message_text(text="下次再来~")
+    await query.edit_message_text(text="欢迎下次再来~")
     return ConversationHandler.END
