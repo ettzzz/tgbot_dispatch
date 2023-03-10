@@ -23,7 +23,7 @@ def struct_datestr(datestr, _format=DATE_FORMAT):
 
 
 def get_now():
-    return time.time()
+    return round(time.time())
 
 
 def get_today_date():

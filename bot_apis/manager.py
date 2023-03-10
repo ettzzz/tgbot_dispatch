@@ -28,6 +28,12 @@ from .nga_bargain.apis import (
     call_prev_bargains,
     call_end_bargains,
 )
+from .maedchen_ai.apis import (
+    call_ai_reboot,
+    call_ai_sleep,
+    call_ai_wakeup,
+    call_ai_chat,
+)
 
 
 async def helloworld(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -57,7 +63,18 @@ def create_interactive_updater():
             fallbacks=[CommandHandler("bargain", call_read_keywords)],
         )
     )
-
+    application.add_handler(
+        ConversationHandler(
+            entry_points=[CommandHandler("wakeup", call_ai_wakeup)],
+            states={
+                0: [
+                    MessageHandler(filters.TEXT & ~filters.COMMAND, call_ai_chat),
+                    CommandHandler("reboot", call_ai_reboot),
+                ],
+            },
+            fallbacks=[CommandHandler("sleep", call_ai_sleep)],
+        )
+    )
     application.run_polling()
 
 
