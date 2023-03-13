@@ -65,14 +65,21 @@ def create_interactive_updater():
     )
     application.add_handler(
         ConversationHandler(
-            entry_points=[CommandHandler("wakeup", call_ai_wakeup)],
+            entry_points=[
+                CommandHandler("wake", call_ai_wakeup),
+                CommandHandler("reboot", call_ai_reboot),
+            ],
             states={
                 0: [
                     MessageHandler(filters.TEXT & ~filters.COMMAND, call_ai_chat),
                     CommandHandler("reboot", call_ai_reboot),
                 ],
+                ConversationHandler.TIMEOUT: [
+                    MessageHandler(filters.TEXT & ~filters.COMMAND, call_ai_sleep)
+                ],  ## TODO: it's not behavioring as I expected, remain untouched
             },
             fallbacks=[CommandHandler("sleep", call_ai_sleep)],
+            conversation_timeout=0,  ## No timeout at all
         )
     )
     application.run_polling()

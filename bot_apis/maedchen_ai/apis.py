@@ -17,8 +17,7 @@ START_ROUTES, END_ROUTES = range(2)  # Stages 0, 1
 
 async def call_ai_wakeup(update, context):
     chat_id = update.message.chat_id
-    agent.reload(chat_id)
-    from_chatgpt = agent.start()
+    from_chatgpt = agent.reload(chat_id)
     await update.message.reply_text(from_chatgpt)
     return START_ROUTES
 
@@ -26,12 +25,13 @@ async def call_ai_wakeup(update, context):
 async def call_ai_sleep(update, context):
     chat_id = update.message.chat_id
     agent.teabreak(chat_id)
-    await update.message.reply_text("Sleeping...I will see you around ~")
+    await update.message.reply_text("Sleeping...I will see you around.")
     return ConversationHandler.END
 
 
 async def call_ai_reboot(update, context):
-    from_chatgpt = agent.start()
+    chat_id = update.message.chat_id
+    from_chatgpt = agent.restart(chat_id)
     await update.message.reply_text(from_chatgpt)
     return START_ROUTES
 
