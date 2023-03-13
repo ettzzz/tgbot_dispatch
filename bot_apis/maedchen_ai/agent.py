@@ -73,15 +73,18 @@ class ChatGPTAgent:
         return self.chat(self.init_prompt)
 
     def teabreak(self, chat_id):
+        self.db.conn = self.db.on()
         ## store self.messages to mongodb
         if self.db.is_chat_exist(chat_id):
             self.db.update_exist(chat_id, self.messages)
         else:
             self.db.create_one(chat_id, self.messages)
+        self.db.off()
         return
 
     def reload(self, chat_id):
         ## fetch previous records from mongodb
+        self.db.conn = self.db.on()
         history = self.db.get_conv(chat_id)
         if history is not None:
             self.messages = history["messages"]
@@ -89,10 +92,13 @@ class ChatGPTAgent:
         else:
             self.messages = []
             message = self.init_prompt
+        self.db.off()
         return self.chat(message)
 
     def restart(self, chat_id):
+        self.db.conn = self.db.on()
         self.db.delete_many([chat_id])
+        self.db.off()
         return self.start()
 
 

@@ -30,10 +30,8 @@ class chatOperator(BaseMongoOperator):
         return "conv_test"
 
     def is_chat_exist(self, chat_id):
-        conn = self.on()  ## TODO: will find another smarter way
         table_name = self._table_dispatch()
-        col = conn[table_name]
-        self.off(conn)
+        col = self.conn[table_name]
         return col.find_one({"chat_id": chat_id}) is not None
 
     def _serialize_messages(self, chat_id, messages):
@@ -47,37 +45,29 @@ class chatOperator(BaseMongoOperator):
         return d
 
     def get_conv(self, chat_id, latest_records=0):
-        conn = self.on()
         table_name = self._table_dispatch()
-        col = conn[table_name]
+        col = self.conn[table_name]
         data = col.find_one({"chat_id": chat_id})
         if latest_records > 0 and data.get("messages") is not None:
             data["messages"] = data["messages"][:latest_records]
-        self.off(conn)
         return data
 
     def create_one(self, chat_id, messages):
-        conn = self.on()
         table_name = self._table_dispatch()
         s_messages = self._serialize_messages(chat_id, messages)
-        col = conn[table_name]
+        col = self.conn[table_name]
         col.insert_one(s_messages)
-        self.off(conn)
         return
 
     def update_exist(self, chat_id, messages):
-        conn = self.on()
         table_name = self._table_dispatch(chat_id)
-        col = conn[table_name]
+        col = self.conn[table_name]
         update = {"update_time": get_now(), "messages": messages}
         col.update_one({"chat_id": chat_id}, {"$set": update})
-        self.off(conn)
         return
 
     def delete_many(self, chat_ids):
-        conn = self.on()
         table_name = self._table_dispatch()
-        col = conn[table_name]
+        col = self.conn[table_name]
         col.delete_many({"chat_id": {"$in": chat_ids}})
-        self.off(conn)
         return
