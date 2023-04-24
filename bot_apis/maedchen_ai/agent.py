@@ -60,6 +60,7 @@ class ChatGPTAgent:
         self.messages = []
         self.db = chatOperator()
         self.init_prompt = "Hello, you are my personal assistance, you should answer my questions and chat with me!"
+        self.init_prompt = ChatDev
 
     def chat(self, message):
         self.messages.append({"role": "user", "content": message})
