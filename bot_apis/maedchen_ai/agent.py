@@ -76,7 +76,7 @@ class ChatGPTAgent:
         
 
     def start(self):
-        self.messages = [{"role": "system": "content": self.system_prompt}]
+        self.messages = [{"role": "system", "content": self.system_prompt}]
         return self.chat(self.init_prompt)
 
     def teabreak(self, chat_id):
