@@ -20,8 +20,8 @@ class chatOperator(BaseMongoOperator):
         MTB_DOMAIN = os.getenv("MTB_DOMAIN")
         MONGO_PASSWD = os.getenv("MONGO_PASSWD_chat")
         MONGO_PORT = 7788
-        DB_NAME = db_name
-        mongo_uri = f"mongodb://{DB_USER}:{MONGO_PASSWD}@{MTB_DOMAIN}:{MONGO_PORT}/?serverSelectionTimeoutMS=5000&connectTimeoutMS=30000&authSource={DB_NAME}&authMechanism=SCRAM-SHA-256"
+        AUTH_SRC = "admin"
+        mongo_uri = f"mongodb://{DB_USER}:{MONGO_PASSWD}@{MTB_DOMAIN}:{MONGO_PORT}/?serverSelectionTimeoutMS=5000&connectTimeoutMS=30000&authSource={AUTH_SRC}&authMechanism=SCRAM-SHA-256"
 
         super().__init__(mongo_uri, db_name)
 
@@ -71,3 +71,7 @@ class chatOperator(BaseMongoOperator):
         col = self.conn[table_name]
         col.delete_many({"chat_id": {"$in": chat_ids}})
         return
+
+
+if __name__ == "__main__":
+    c = chatOperator()
