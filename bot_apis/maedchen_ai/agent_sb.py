@@ -56,7 +56,7 @@ After entering all that, say no more and enter no more text, and wait for me to 
 class ChatGPTAgent:
     def __init__(self):
         # Setting the API key to use the OpenAI API
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = os.getenv("OPENAI_SB_API_KEY")
         self.chat_url = 'https://api.openai-sb.com/v1/chat/completions'
         self.headers = {
             'Authorization': f"Bearer {self.api_key}",
