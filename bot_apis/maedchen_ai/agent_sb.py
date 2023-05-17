@@ -58,6 +58,7 @@ class ChatGPTAgent:
         # Setting the API key to use the OpenAI API
         self.api_key = os.getenv("OPENAI_SB_API_KEY")
         self.chat_url = 'https://api.openai-sb.com/v1/chat/completions'
+        self.token_thresh = 4000
         self.headers = {
             'Authorization': f"Bearer {self.api_key}",
             'Content-Type': 'application/json',
@@ -81,6 +82,9 @@ class ChatGPTAgent:
             d = json.dumps(data)
             response = requests.post(self.chat_url, headers=self.headers, data=d, timeout=300)
             content = response.json()["choices"][0]["message"]["content"]
+            total_tokens = response.json()["usage"]["total_tokens"]
+            if total_tokens >= self.token_thresh:
+                self.messages = self.messages[1:]
             self.messages.append({"role": "assistant", "content": content})
             return content
         except Exception as e:
@@ -108,7 +112,7 @@ class ChatGPTAgent:
             self.messages = history["messages"]
             message = "Hello again, what did we just talk about?"
         else:
-            self.messages = []
+            self.messages = [{"role": "system", "content": self.system_prompt}]
             message = self.init_prompt
         self.db.off()
         return self.chat(message)

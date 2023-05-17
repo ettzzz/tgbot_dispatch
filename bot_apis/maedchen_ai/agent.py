@@ -56,6 +56,7 @@ class ChatGPTAgent:
     def __init__(self):
         # Setting the API key to use the OpenAI API
         openai.api_key = os.getenv("OPENAI_API_KEY")
+        self.token_thresh = 4000
         self.messages = []
         self.db = chatOperator()
         self.system_prompt = "Act like a neighbor teenage girl, she's a little bit shy but very nice and gental. \
@@ -69,15 +70,20 @@ class ChatGPTAgent:
                 model="gpt-3.5-turbo", messages=self.messages, request_timeout=300.0
             )
             content = response["choices"][0]["message"].content
+            total_tokens = response["usage"]["total_tokens"]
+            if total_tokens >= self.token_thresh:
+                self.messages = self.messages[1:]
             self.messages.append({"role": "assistant", "content": content})
             return content
         except Exception as e:
             return f"ERROR: {e}"
         
 
-    def start(self):
+    def start(self, message=None):
         self.messages = [{"role": "system", "content": self.system_prompt}]
-        return self.chat(self.init_prompt)
+        if message is None:
+            message = self.init_prompt
+        return self.chat(message)
 
     def teabreak(self, chat_id):
         self.db.conn = self.db.on()
@@ -97,7 +103,7 @@ class ChatGPTAgent:
             self.messages = history["messages"]
             message = "Hello again, what did we just talk about?"
         else:
-            self.messages = []
+            self.messages = [{"role": "system", "content": self.system_prompt}]
             message = self.init_prompt
         self.db.off()
         return self.chat(message)
