@@ -42,5 +42,9 @@ async def call_ai_reboot(update, context):
 async def call_ai_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     from_user = update.message.text
     from_chatgpt = agent.chat(from_user)
-    await update.message.reply_text(from_chatgpt, parse_mode="Markdown")
+    try:
+        await update.message.reply_text(from_chatgpt, parse_mode="Markdown")
+    except:
+        await update.message.reply_text(from_chatgpt) ## it seems telegram bot cannot parse "_" in markdown
     return START_ROUTES
+
