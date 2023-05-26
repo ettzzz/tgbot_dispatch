@@ -2,19 +2,45 @@
 
 simple application based on fastapi web service framework with python-telegram-bot to control some customized notifications.
 
-## how to use and deploy
+### appendix
 
-0. copy `private_vars.py` to `./configs/` from your base
-1. run `sudo apt install supervisor nginx -y`
-2. run `pip install -r ./requirements.txt`
-3. run `sudo cp ./deploy/tgbot_nginx.conf /etc/nginx/conf.d/`
-4. run `sudo cp ./deploy/tgbot_supervisor.conf /etc/supervisor/conf.d/`
-5. manually change details of these conf files regards of deploy instances
-6. run `sudo systemctl restart nginx`
-7. run `sudo supervisorctl update`
+some nginx and supervisord conf, might be helpful
 
-## TODO:
+```shell
+server {
+    listen 80;
+    server_name your_domain_name;
+    access_log /var/log/nginx/tgbot_access.log;
+    error_log /var/log/nginx/tgbot_error.log;
 
-- [x] re-read bot script examples, make it looks better
-- [x] finish designed functions in bot_apis
-- [ ] is there a way to use variable in supervisor.conf?
+    location /tgbot {
+        include /etc/nginx/proxy_params;
+        proxy_pass http://127.0.0.1:7710;
+    }
+}
+```
+
+```shell
+[group:tgbot]
+programs=fastapi,tgbot
+
+[program:fastapi]
+user=whoyouare
+priority=99
+directory=/path/to/tgbot_dispatch
+command=/home/whoyouare/miniconda3/envs/tgbot/bin/uvicorn main:app --port 7710
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/tgbot_fastapi.log
+
+[program:tgbot]
+user=whoyouare
+priority=98
+directory=/path/to/tgbot_dispatch
+command=/home/whoyouare/miniconda3/envs/tgbot/bin/python3 activate_bot.py
+autostart=true
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/supervisor/tgbot.log
+```

@@ -6,32 +6,16 @@ Created on Fri Mar 10 15:30:13 2023
 @author: eee
 """
 
-from telegram.ext import ContextTypes, ConversationHandler
+from telegram.ext import ContextTypes
 from telegram import Update
-from bot_apis.maedchen_ai.agent import ChatGPTAgent
+from bot_apis.maedchen_ai.agent_sb import ChatGPTAgent
 
 agent = ChatGPTAgent()
 
 START_ROUTES, END_ROUTES = range(2)  # Stages 0, 1
 
-
-async def call_ai_wakeup(update, context):
-    chat_id = update.message.chat_id
-    from_chatgpt = agent.reload(chat_id)
-    await update.message.reply_text(from_chatgpt, parse_mode="Markdown")
-    return START_ROUTES
-
-
-async def call_ai_sleep(update, context):
-    chat_id = update.message.chat_id
-    agent.teabreak(chat_id)
-    await update.message.reply_text("Sleeping...I will see you around.")
-    return ConversationHandler.END
-
-
 async def call_ai_reboot(update, context):
-    chat_id = update.message.chat_id
-    from_chatgpt = agent.restart(chat_id)
+    from_chatgpt = agent.start()
     try:
         await update.message.reply_text(from_chatgpt, parse_mode="Markdown")
     except:
@@ -47,4 +31,7 @@ async def call_ai_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except:
         await update.message.reply_text(from_chatgpt) ## it seems telegram bot cannot parse "_" in markdown
     return START_ROUTES
+
+async def call_ai_sleep(update, context):
+    return 
 

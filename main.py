@@ -12,14 +12,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from configs.static_vars import API_PREFIX, DEBUG, ROOT
-
-_private_var_path = os.path.join(ROOT, "configs", "private_vars.py")
-assert os.path.exists(_private_var_path), "Woo! You missed private_vars.py~"
-from configs.private_vars import BOT_INFO
+from configs.static_vars import DEBUG, BOT_INFO
 from bot_apis import *
 
 
+API_PREFIX = "tgbot"
 app = FastAPI(debug=DEBUG)
 scheduler = BackgroundScheduler()
 
