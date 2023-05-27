@@ -28,7 +28,7 @@ jobs:
         TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         MAI_TOKEN: ${{ secrets.MAI_TOKEN }}
         PROBIUS_TOKEN: ${{ secrets.PROBIUS_TOKEN }}
-      run: python -m uvicorn main:app --port 7710
+      run: nohup python -m uvicorn main:app --port 7710 >> ./fastapi.log 2>&1 &
 
   deploy-tgbot:
     runs-on: self-hosted
@@ -52,4 +52,4 @@ jobs:
         TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         MAI_TOKEN: ${{ secrets.MAI_TOKEN }}
         PROBIUS_TOKEN: ${{ secrets.PROBIUS_TOKEN }}
-      run: python activate_bot.py
+      run: nohup python -u activate_bot.py >> ./tgbot.log 2>&1 &
