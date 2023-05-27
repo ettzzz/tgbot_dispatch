@@ -18,9 +18,8 @@ from telegram.ext import (
     filters,
 )
 
-from configs.private_vars import BOT_INFO
+from configs.static_vars import BOT_INFO
 from .v2ray_update.nice_scrapper import call_nice_scrapper
-from .weather_query.weather_reminder import call_weather_reminder
 from .nga_bargain.apis import (
     call_read_bargains,
     call_read_keywords,
@@ -30,9 +29,8 @@ from .nga_bargain.apis import (
 )
 from .maedchen_ai.apis import (
     call_ai_reboot,
-    call_ai_sleep,
-    call_ai_wakeup,
     call_ai_chat,
+    call_ai_sleep
 )
 
 
@@ -48,7 +46,6 @@ def create_interactive_updater():
 
     application.add_handler(CommandHandler("hi", helloworld))
     application.add_handler(CommandHandler("v2ray", call_nice_scrapper))
-    application.add_handler(CommandHandler("wetter", call_weather_reminder))
     application.add_handler(
         ConversationHandler(
             entry_points=[CommandHandler("bargain", call_read_keywords)],
@@ -66,7 +63,6 @@ def create_interactive_updater():
     application.add_handler(
         ConversationHandler(
             entry_points=[
-                CommandHandler("wake", call_ai_wakeup),
                 CommandHandler("reboot", call_ai_reboot),
             ],
             states={
@@ -74,9 +70,6 @@ def create_interactive_updater():
                     MessageHandler(filters.TEXT & ~filters.COMMAND, call_ai_chat),
                     CommandHandler("reboot", call_ai_reboot),
                 ],
-                ConversationHandler.TIMEOUT: [
-                    MessageHandler(filters.TEXT & ~filters.COMMAND, call_ai_sleep)
-                ],  ## TODO: it's not behavioring as I expected, remain untouched
             },
             fallbacks=[CommandHandler("sleep", call_ai_sleep)],
             conversation_timeout=0,  ## No timeout at all
