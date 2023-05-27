@@ -3,5 +3,5 @@ uvicorn==0.15.0
 python-telegram-bot==20.0
 requests==2.25.1
 apscheduler==3.10.0
-bs4==4.12.2
+beautifulsoup4==4.12.2
 # openai==0.27.7 
