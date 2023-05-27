@@ -24,7 +24,7 @@ jobs:
       run: |
         sudo docker rm -f $IMAGE_NAME || true
         sudo docker build --progress=plain -t $IMAGE_NAME .
-        sudo docker run -d -p 7710:8000 --name $CONTAINER_NAME
+        sudo docker run -d -p 7710:8000 --name $CONTAINER_NAME \
           -e DEBUG=$DEBUG \
           -e TG_CHAT_ID=$TG_CHAT_ID \
           -e MAI_TOKEN=$MAI_TOKEN \
