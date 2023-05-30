@@ -14,7 +14,7 @@ jobs:
 
     - name: Building docker image and run container
       env: 
-        IMAGE_NAME: "tgbot_dispath_image"
+        IMAGE_NAME: "tgbot_dispatch_image"
         CONTAINER_NAME: "tgbot_dispath"
         DEBUG: "0"
         TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
@@ -22,7 +22,7 @@ jobs:
         PROBIUS_TOKEN: ${{ secrets.PROBIUS_TOKEN }}
         OPENAI_SB_API_KEY: ${{ secrets.OPENAI_SB_API_KEY }}
       run: |
-        sudo docker stop $IMAGE_NAME && sudo docker rm -f $IMAGE_NAME || true
+        sudo docker stop $CONTAINER_NAME && sudo docker rm -f $CONTAINER_NAME || true
         sudo docker build --progress=plain -t $IMAGE_NAME .
         sudo docker run -d -p 7710:8000 --name $CONTAINER_NAME \
           -e DEBUG=$DEBUG \
