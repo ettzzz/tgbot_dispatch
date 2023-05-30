@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 class ngaBargainScrapper:
     def __init__(self):
         seed = random.randint(101, 999)
-        self.url = f"https://bbs.nga.cn/read.php?tid=33902411&rand={seed}"
+        self.url = f"https://bbs.nga.cn/read.php?tid=35583058&rand={seed}"
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0",
         }
@@ -92,3 +92,4 @@ if __name__ == "__main__":
     print(r.status_code)
     pair, date = nga_scrapper.data_clean(r)
     print(len(pair))
+
