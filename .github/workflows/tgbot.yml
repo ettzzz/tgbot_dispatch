@@ -22,7 +22,7 @@ jobs:
         PROBIUS_TOKEN: ${{ secrets.PROBIUS_TOKEN }}
         OPENAI_SB_API_KEY: ${{ secrets.OPENAI_SB_API_KEY }}
       run: |
-        sudo docker rm -f $IMAGE_NAME || true
+        sudo docker stop $IMAGE_NAME && sudo docker rm -f $IMAGE_NAME || true
         sudo docker build --progress=plain -t $IMAGE_NAME .
         sudo docker run -d -p 7710:8000 --name $CONTAINER_NAME \
           -e DEBUG=$DEBUG \
