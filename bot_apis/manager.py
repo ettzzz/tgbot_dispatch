@@ -30,12 +30,21 @@ from .nga_bargain.apis import (
 from .maedchen_ai.apis import (
     call_ai_reboot,
     call_ai_chat,
-    call_ai_sleep
+    call_ai_reboot4,
+    call_ai_chat4,
 )
 
 
 async def helloworld(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hallo!")
+
+async def _call_ai_sleep(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Sleeping...Bye!")
+    return ConversationHandler.END
+
+async def _call_ai_fallback(update, context):
+    await update.message.reply_text("Triggered fallback. Conversation ends.")
+    return ConversationHandler.END
 
 
 def create_interactive_updater():
@@ -63,19 +72,27 @@ def create_interactive_updater():
     application.add_handler(
         ConversationHandler(
             entry_points=[
-                CommandHandler("reboot", call_ai_reboot),
+                CommandHandler("start", call_ai_reboot),
+                CommandHandler("start4", call_ai_reboot4),
             ],
             states={
                 0: [
                     MessageHandler(filters.TEXT & ~filters.COMMAND, call_ai_chat),
-                    CommandHandler("reboot", call_ai_reboot),
+                    CommandHandler("start", call_ai_reboot),
+                    CommandHandler("sleep", _call_ai_sleep)
+                ],
+                1: [
+                    MessageHandler(filters.TEXT & ~filters.COMMAND, call_ai_chat4),
+                    CommandHandler("start4", call_ai_reboot4),
+                    CommandHandler("sleep", _call_ai_sleep)
                 ],
             },
-            fallbacks=[CommandHandler("sleep", call_ai_sleep)],
-            conversation_timeout=0,  ## No timeout at all
+            fallbacks=[MessageHandler(filters.TEXT, _call_ai_fallback)],
+            conversation_timeout=900,  # 15 minutes
         )
     )
     application.run_polling()
+
 
 
 def create_automatic_updater():

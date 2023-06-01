@@ -115,7 +115,6 @@ async def call_read_bargains(update: Update, context: ContextTypes.DEFAULT_TYPE)
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(md_text, reply_markup=reply_markup)
-    # Tell ConversationHandler that we're in state `FIRST` now
     return START_ROUTES
 
 

@@ -61,18 +61,16 @@ class ChatGPTAgent:
             'Authorization': f"Bearer {self.api_key}",
             'Content-Type': 'application/json',
         }
-        self.model = "gpt-3.5-turbo"
         self.messages = []
-        self.system_prompt = "Act like a neighbor teenage girl, she's a little bit shy but very nice and gental. \
-            She's been good at study all the time, she knows a lot of things."
+        self.system_prompt = "Act like a 30 year-old tutor with a Phd degree to answer user's question, but in a precise and concise way. Do not reply block of fundamental concepts unless you are asked to."
         self.init_prompt = "Hello! Good to see you there!"
 
 
-    def chat(self, message):
+    def chat(self, message, model="gpt-3.5-turbo"):
         self.messages.append({"role": "user", "content": message})
         try:
             data = {
-                "model": self.model,
+                "model": model,
                 "stream": False,
                 "messages": self.messages
             }
@@ -87,9 +85,9 @@ class ChatGPTAgent:
         except Exception as e:
             return f"ERROR: {e}"
 
-    def start(self):
+    def start(self, model="gpt-3.5-turbo"):
         self.messages = [{"role": "system", "content": self.system_prompt}]
-        return self.chat(self.init_prompt)
+        return self.chat(self.init_prompt, model)
 
 
 

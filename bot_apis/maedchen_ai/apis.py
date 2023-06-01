@@ -12,7 +12,7 @@ from bot_apis.maedchen_ai.agent_sb import ChatGPTAgent
 
 agent = ChatGPTAgent()
 
-START_ROUTES, END_ROUTES = range(2)  # Stages 0, 1
+GPT3_5_ROUTES, GPT4_ROUTES = range(2)  # Stages 0, 1
 
 async def call_ai_reboot(update, context):
     from_chatgpt = agent.start()
@@ -20,7 +20,7 @@ async def call_ai_reboot(update, context):
         await update.message.reply_text(from_chatgpt, parse_mode="Markdown")
     except:
         await update.message.reply_text(from_chatgpt) ## it seems telegram bot cannot parse "_" in markdown
-    return START_ROUTES
+    return GPT3_5_ROUTES
 
 
 async def call_ai_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -30,8 +30,23 @@ async def call_ai_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(from_chatgpt, parse_mode="Markdown")
     except:
         await update.message.reply_text(from_chatgpt) ## it seems telegram bot cannot parse "_" in markdown
-    return START_ROUTES
+    return GPT3_5_ROUTES
 
-async def call_ai_sleep(update, context):
-    return 
 
+async def call_ai_reboot4(update, context):
+    from_chatgpt = agent.start(model="gpt-4")
+    try:
+        await update.message.reply_text(from_chatgpt, parse_mode="Markdown")
+    except:
+        await update.message.reply_text(from_chatgpt) ## it seems telegram bot cannot parse "_" in markdown
+    return GPT4_ROUTES
+
+
+async def call_ai_chat4(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    from_user = update.message.text
+    from_chatgpt = agent.chat(from_user, model="gpt-4")
+    try:
+        await update.message.reply_text(from_chatgpt, parse_mode="Markdown")
+    except:
+        await update.message.reply_text(from_chatgpt) ## it seems telegram bot cannot parse "_" in markdown
+    return GPT4_ROUTES
