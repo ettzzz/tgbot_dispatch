@@ -72,7 +72,9 @@ class ChatGPTAgent:
             data = {
                 "model": model,
                 "stream": False,
-                "messages": self.messages
+                "messages": self.messages,
+                "temperature": 0.2,
+                "max_tokens": 2000,
             }
             d = json.dumps(data)
             response = requests.post(self.chat_url, headers=self.headers, data=d, timeout=300)
