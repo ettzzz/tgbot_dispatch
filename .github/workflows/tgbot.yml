@@ -15,7 +15,7 @@ jobs:
     - name: Building docker image and run container
       env: 
         IMAGE_NAME: "tgbot_dispatch_image"
-        CONTAINER_NAME: "tgbot_dispath"
+        CONTAINER_NAME: "tgbot_dispatch"
         DEBUG: "0"
         TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         MAI_TOKEN: ${{ secrets.MAI_TOKEN }}
