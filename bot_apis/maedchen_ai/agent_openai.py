@@ -24,9 +24,6 @@ class ChatGPTAgent:
             'Authorization': f"Bearer {self.api_key}",
             'Content-Type': 'application/json',
         }
-        self.system_prompt = f"""You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible.
-            Knowledge cutoff: {self.knowledge_cutoff}
-            Current date: {get_today_date()}"""
         self.init_prompt = "Hello! Good to see you there!"
         
         self.token_thresh = 8192
@@ -54,7 +51,10 @@ class ChatGPTAgent:
             return f"ERROR: {e}"
 
     def start(self, model):
-        self.messages = [{"role": "system", "content": self.system_prompt}]
+        system_prompt = f"""You are ChatGPT, a large language model trained by OpenAI. Answer as concisely as possible.
+            Knowledge cutoff: {self.knowledge_cutoff}
+            Current date: {get_today_date()}"""
+        self.messages = [{"role": "system", "content": system_prompt}]
         return self.chat(self.init_prompt, model)
 
 
