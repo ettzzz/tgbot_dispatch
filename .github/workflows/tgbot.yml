@@ -20,7 +20,10 @@ jobs:
         TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         MAI_TOKEN: ${{ secrets.MAI_TOKEN }}
         PROBIUS_TOKEN: ${{ secrets.PROBIUS_TOKEN }}
-        OPENAI_SB_API_KEY: ${{ secrets.OPENAI_SB_API_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_SB_API_KEY }}
+        OPENAI_API_BASE: "https://api.openai-sb.com"
+        GPT3_5_MODEL: "gpt-3.5-turbo-1106"
+        GPT4_MODEL: "gpt-4-1106-preview"
       run: |
         sudo docker stop $CONTAINER_NAME && sudo docker rm -f $CONTAINER_NAME || true
         sudo docker build --progress=plain -t $IMAGE_NAME .
