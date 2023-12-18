@@ -22,6 +22,7 @@ jobs:
         PROBIUS_TOKEN: ${{ secrets.PROBIUS_TOKEN }}
         OPENAI_API_KEY: ${{ secrets.OPENAI_SB_API_KEY }}
         OPENAI_API_BASE: "https://api.openai-sb.com"
+        KNOWLEDGE_CUTOFF: "2023-11"
         GPT3_5_MODEL: "gpt-3.5-turbo-1106"
         GPT4_MODEL: "gpt-4-1106-preview"
       run: |
@@ -32,7 +33,11 @@ jobs:
           -e TG_CHAT_ID=$TG_CHAT_ID \
           -e MAI_TOKEN=$MAI_TOKEN \
           -e PROBIUS_TOKEN=$PROBIUS_TOKEN \
-          -e OPENAI_SB_API_KEY=$OPENAI_SB_API_KEY \
+          -e OPENAI_API_KEY=$OPENAI_API_KEY \
+          -e OPENAI_API_BASE=$OPENAI_API_BASE
+          -e KNOWLEDGE_CUTOFF=$KNOWLEDGE_CUTOFF \
+          -e GPT3_5_MODEL=$GPT3_5_MODEL \
+          -e GPT4_MODEL=$GPT4_MODEL \
           $IMAGE_NAME
         sudo docker image prune -f
         sudo docker rm $(docker ps -q -f status=exited) || true
