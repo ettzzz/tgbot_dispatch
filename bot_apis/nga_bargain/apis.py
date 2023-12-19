@@ -34,12 +34,13 @@ def save_bargains(pair, date, tid, days_backward=3):
     df = pd.DataFrame(pair, columns = ["desc", "link"])
     df["date"] = date
     df["tid"] = tid
+    
     if os.path.exists(file_path):
         prev_df = pd.read_csv(file_path)
-    df = pd.concat([prev_df, df])
-    
-    edge_date = get_delta_date(date, days_backward*(-1))
-    df = df[df["date"] >= edge_date]
+        df = pd.concat([prev_df, df])
+        edge_date = get_delta_date(date, days_backward*(-1))
+        df = df[df["date"] >= edge_date]
+        
     df.to_csv(file_path, index=False)
     
 def read_bargains(keywords):
