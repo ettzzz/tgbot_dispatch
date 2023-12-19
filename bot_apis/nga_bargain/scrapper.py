@@ -16,10 +16,10 @@ import requests
 from bs4 import BeautifulSoup
 
 
+
 class ngaBargainScrapper:
-    def __init__(self):
-        seed = random.randint(101, 999)
-        self.url = f"https://bbs.nga.cn/read.php?tid=35583058&rand={seed}"
+    def __init__(self, tid=None):
+        self.tid = "35583058" if tid is None else tid
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0) Gecko/20100101 Firefox/102.0",
         }
@@ -41,23 +41,31 @@ class ngaBargainScrapper:
         self.headers.update({"Cookie": Cookie})
 
     def get_raw(self, retry=0):
+        seed = random.randint(101, 999)
+        url = f"https://bbs.nga.cn/read.php?tid={self.tid}&rand={seed}"
         if retry >= 3:
             return None
         try:
-            r = requests.get(self.url, headers=self.headers)
+            r = requests.get(url, headers=self.headers)
             if r.status_code != 200:
                 return self.get_raw(retry + 1)
             else:
                 return r
-        except:
+        except:  # noqa: E722
             return self.get_raw(retry + 1)
-
+        
     def data_clean(self, r):
         soup = BeautifulSoup(r.text, "html.parser")
         tables = soup.select("#postcontent0")
         valid_strs = list()
         if len(tables) < 1:
-            return valid_strs
+            return valid_strs, "", self.tid
+        
+        if "新帖地址" in tables[0].contents[0]:
+            self.tid = re.findall(r'tid=(\d*)[[]', tables[0].contents[0])[0]
+            r = self.get_raw()
+            time.sleep(1)
+            return self.data_clean(r)
 
         ts = datetime.datetime.now()
         year = ts.year
@@ -83,13 +91,13 @@ class ngaBargainScrapper:
                 link = "" if len(link) == 0 else link[0]
                 pair.append((title, link))
 
-        return pair, date
+        return pair, date, self.tid
 
 
 if __name__ == "__main__":
     nga_scrapper = ngaBargainScrapper()
     r = nga_scrapper.get_raw()
     print(r.status_code)
-    pair, date = nga_scrapper.data_clean(r)
+    pair, date, tid = nga_scrapper.data_clean(r)
     print(len(pair))
 

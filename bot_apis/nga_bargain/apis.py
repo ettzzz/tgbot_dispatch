@@ -8,55 +8,49 @@ Created on Fri Feb  3 16:02:12 2023
 
 import os
 
+import pandas as pd
 from telegram.ext import ContextTypes, ConversationHandler
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 
 from configs.static_vars import ROOT
 from bot_apis.nga_bargain.scrapper import ngaBargainScrapper
-from utils.datetime_tools import struct_datestr
+from utils.datetime_tools import get_delta_date
 
 
 dir_path = os.path.join(ROOT, "_barnhouse")
 START_ROUTES, END_ROUTES = range(2)  # Stages 0, 1
 STEP = 5
+file_name = "ngabargainpair.csv"
 
+def read_tid():
+    file_path = os.path.join(dir_path, file_name)
+    if not os.path.exists(file_path):
+        return None
+    df = pd.read_csv(file_path)
+    return df.iloc[len(df)-1]["tid"]
 
-def save_bargains(pair, date):
-    file_name = f"ngabargainpair_{date}.txt"
-    with open(os.path.join(dir_path, file_name), "w") as f:
-        for title, link in pair:
-            f.write(f"{title}|{link}\n")
-
-
+def save_bargains(pair, date, tid, days_backward=3):
+    file_path = os.path.join(dir_path, file_name)
+    df = pd.DataFrame(pair, columns = ["desc", "link"])
+    df["date"] = date
+    df["tid"] = tid
+    if os.path.exists(file_path):
+        prev_df = pd.read_csv(file_path)
+    df = pd.concat([prev_df, df])
+    
+    edge_date = get_delta_date(date, days_backward*(-1))
+    df = df[df["date"] >= edge_date]
+    df.to_csv(file_path, index=False)
+    
 def read_bargains(keywords):
+    file_path = os.path.join(dir_path, file_name)
     pairs = set()
-    for file_name in os.listdir(dir_path):
-        if file_name.startswith("ngabargainpair"):
-            date = file_name.split("_")[1].split(".txt")[0]
-            with open(os.path.join(dir_path, file_name), "r") as f:
-                p = f.read()
-            for r in p.split("\n"):
-                try:
-                    title, link = r.split("|")
-                    if any(k.strip() in title for k in keywords):
-                        pairs.add((title, link))
-                except:
-                    continue
-
-    return list(pairs), date
-
-
-def _barnhouse_check(date, days_backward=3):
-    struct_d = struct_datestr(date)
-    for file_name in os.listdir(dir_path):
-        if file_name.startswith("ngabargainpair"):
-            d = file_name.split("_")[1].split(".txt")[0]
-            sd = struct_datestr(d)
-            if (struct_d - sd).days >= days_backward:
-                file_path = os.path.join(dir_path, file_name)
-                os.remove(file_path)
-    return
-
+    df = pd.read_csv(file_path)
+    for idx, row in df.iterrows():
+        if any(k.strip() in row["desc"] for k in keywords):
+            pairs.add((row["desc"], row["link"]))
+    
+    return list(pairs), row["date"]
 
 def generate_md_text(buylist, idx=0, step=STEP):
     keywords = buylist.split(" ")
@@ -84,15 +78,15 @@ def generate_md_text(buylist, idx=0, step=STEP):
 
 
 def call_nga_bargain_scrapper():
-    nga_scrapper = ngaBargainScrapper()
+    tid = read_tid()
+    nga_scrapper = ngaBargainScrapper(tid=tid)
     r = nga_scrapper.get_raw()
     if r is None:
         return  # something wrong, TODO: gibber say something
-    pair, date = nga_scrapper.data_clean(r)
+    pair, date, tid = nga_scrapper.data_clean(r)
     if len(pair) == 0:
         return  # something wrong, TODO: gibber say something
-    save_bargains(pair, date)
-    _barnhouse_check(date)
+    save_bargains(pair, date, tid, days_backward=3)
 
 
 async def call_read_keywords(update: Update, context: ContextTypes.DEFAULT_TYPE):

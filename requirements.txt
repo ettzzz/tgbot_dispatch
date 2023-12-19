@@ -4,4 +4,5 @@ python-telegram-bot==20.0
 requests==2.25.1
 apscheduler==3.10.0
 beautifulsoup4==4.12.2
+pandas==1.5.3
 # openai==0.27.7 
