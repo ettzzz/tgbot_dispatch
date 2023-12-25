@@ -16,7 +16,7 @@ jobs:
       env: 
         IMAGE_NAME: "tgbot_dispatch_image"
         CONTAINER_NAME: "tgbot_dispatch"
-        DOMAIN: ${{env.DOMAIN}}
+        DOMAIN: ${{ vars.DOMAIN }}
         DEBUG: "0"
         TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         MAI_TOKEN: ${{ secrets.MAI_TOKEN }}
