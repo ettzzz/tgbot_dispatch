@@ -15,7 +15,7 @@ import requests
 from telegram.ext import ContextTypes
 from telegram import Update
 
-from configs.static_vars import UA, ROOT
+from configs.static_vars import UA, ROOT, DOMAIN
 from utils.datetime_tools import get_today_date, get_delta_date
 
 
@@ -29,7 +29,7 @@ def _check_github_raw(date):
     try:
         r = requests.get(url, headers=headers, timeout=5)
     except:
-        return None  ## timeout
+        return ""  ## timeout
 
     return r
 
@@ -37,6 +37,7 @@ def _check_github_raw(date):
 # def call_nice_scrapper(update: Update, _: CallbackContext):  # _ is a must...
 async def call_nice_scrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
     today = get_today_date()
+    API_PREFIX = "tgbot"
     text = "现在并没有可以白嫖的"
     for i in range(4):  ## check last 3 days:
         date = get_delta_date(today, days=-1 * i)
@@ -44,7 +45,7 @@ async def call_nice_scrapper(update: Update, context: ContextTypes.DEFAULT_TYPE)
         if r is not None and r.status_code == 200:
             with open(os.path.join(ROOT, "_barnhouse", "v2ray.txt"), "w") as f:
                 f.write(r.text)
-            text = f"白嫖v2ray{date}更新啦！"
+            text = f"白嫖v2ray{date}更新啦！订阅地址：http://{DOMAIN}/{API_PREFIX}/latest_v2ray"
             break
         else:
             continue

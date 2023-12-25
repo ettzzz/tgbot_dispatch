@@ -8,7 +8,10 @@ Created on Tue Jul  5 10:08:13 2022
 
 import os
 
+
 ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+DOMAIN = os.getenv("DOMAIN")
+
 DEBUG = os.getenv("DEBUG") != "0"
 if DEBUG:
     proxy = 'http://127.0.0.1:8889'
@@ -33,5 +36,6 @@ BOT_INFO = {
         "chat_id": _CHAT_ID,
     },
 }
+
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0"
 BASE_HEADERS = {"User-Agent": UA}
