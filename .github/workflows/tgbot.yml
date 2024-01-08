@@ -29,7 +29,7 @@ jobs:
       run: |
         sudo docker stop $CONTAINER_NAME && sudo docker rm -f $CONTAINER_NAME || true
         sudo docker build --progress=plain -t $IMAGE_NAME .
-        sudo docker run -d -p 127.0.0.1:7710:8000 --name $CONTAINER_NAME \
+        sudo docker run --network host -d -p 127.0.0.1:7710:8000 --name $CONTAINER_NAME \
           -e DEBUG=$DEBUG \
           -e DOMAIN=$DOMAIN \
           -e TG_CHAT_ID=$TG_CHAT_ID \
