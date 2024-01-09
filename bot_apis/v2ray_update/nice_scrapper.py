@@ -25,7 +25,7 @@ def _check_github_raw(date):
     """
     headers = {"User-Agent": UA}
     len4date = "".join(date.split("-")[1:])
-    url = f"https://raw.githubusercontent.com/pojiezhiyuanjun/freev2/master/{len4date}.txt"
+    url = f"https://raw.githubusercontent.com/pojiezhiyuanjun/2023/main/{len4date}.txt"
     try:
         r = requests.get(url, headers=headers, timeout=5)
     except:
