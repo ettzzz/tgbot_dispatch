@@ -21,7 +21,7 @@ jobs:
         DEEPSEEK_APIKEY: ${{ secrets.DEEPSEEK_APIKEY }}
         FISH_AUDIO_APIKEY: ${{ secrets.FISH_AUDIO_APIKEY }}
       run: |
-        sudo docker stop $CONTAINER_NAME && sudo docker rm -f $CONTAINER_NAME || true
+        sudo docker stop $CONTAINER_NAME || true && sudo docker rm -f $CONTAINER_NAME || true
         sudo docker build --progress=plain -t $IMAGE_NAME .
         sudo docker run --network host -d --name $CONTAINER_NAME \
           -e DEBUG=$DEBUG \
