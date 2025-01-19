@@ -16,30 +16,18 @@ jobs:
       env: 
         IMAGE_NAME: "tgbot_dispatch_image"
         CONTAINER_NAME: "tgbot_dispatch"
-        DOMAIN: ${{ vars.DOMAIN }}
         DEBUG: "0"
-        TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
         MAI_TOKEN: ${{ secrets.MAI_TOKEN }}
-        PROBIUS_TOKEN: ${{ secrets.PROBIUS_TOKEN }}
-        OPENAI_API_KEY: ${{ secrets.OPENAI_SB_API_KEY }}
-        OPENAI_API_BASE: "https://api.openai-sb.com"
-        KNOWLEDGE_CUTOFF: "2023-11"
-        GPT3_5_MODEL: "gpt-3.5-turbo-1106"
-        GPT4_MODEL: "gpt-4-1106-preview"
+        DEEPSEEK_APIKEY: ${{ secrets.DEEPSEEK_APIKEY }}
+        FISH_AUDIO_APIKEY: ${{ secrets.FISH_AUDIO_APIKEY }}
       run: |
         sudo docker stop $CONTAINER_NAME && sudo docker rm -f $CONTAINER_NAME || true
         sudo docker build --progress=plain -t $IMAGE_NAME .
         sudo docker run --network host -d --name $CONTAINER_NAME \
           -e DEBUG=$DEBUG \
-          -e DOMAIN=$DOMAIN \
-          -e TG_CHAT_ID=$TG_CHAT_ID \
           -e MAI_TOKEN=$MAI_TOKEN \
-          -e PROBIUS_TOKEN=$PROBIUS_TOKEN \
-          -e OPENAI_API_KEY=$OPENAI_API_KEY \
-          -e OPENAI_API_BASE=$OPENAI_API_BASE \
-          -e KNOWLEDGE_CUTOFF=$KNOWLEDGE_CUTOFF \
-          -e GPT3_5_MODEL=$GPT3_5_MODEL \
-          -e GPT4_MODEL=$GPT4_MODEL \
+          -e DEEPSEEK_APIKEY=$DEEPSEEK_APIKEY \
+          -e FISH_AUDIO_APIKEY=$FISH_AUDIO_APIKEY \
           $IMAGE_NAME
         sudo docker image prune -f
         sudo docker rm $(docker ps -q -f status=exited) || true

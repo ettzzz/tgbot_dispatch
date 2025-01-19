@@ -10,7 +10,7 @@ import os
 import logging
 import logging.config
 
-from config.static_vars import ROOT, DEBUG
+from configs.static_vars import ROOT, DEBUG
 
 
 def get_logger(debug=DEBUG):

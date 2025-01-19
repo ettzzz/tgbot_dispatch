@@ -1,66 +1,75 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jul  5 10:07:00 2022
+Created on Tue Jan  3 15:20:41 2023
 
 @author: eee
 """
 
 import os
-from apscheduler.schedulers.background import BackgroundScheduler
 
-from fastapi import FastAPI
-from pydantic import BaseModel
+from telegram import Update
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    MessageHandler,
+    ConversationHandler,
+    CallbackQueryHandler,
+    ContextTypes,
+    filters,
+)
 
-from configs.static_vars import DEBUG, BOT_INFO
-from bot_apis import *
+from bot_functions.maedchen_ai.chat_apis import call_chat, reboot_chat
+from bot_functions.maedchen_ai.voice_apis import call_oralchat, reboot_oralchat
 
 
-API_PREFIX = "tgbot"
-app = FastAPI(debug=DEBUG)
-scheduler = BackgroundScheduler()
 
+async def helloworld(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Hallo! Ich bin ein Bot. Bitte sprich mit mir!")
 
-def automatic_forward_message(text, link="", is_interactive=0):
-    bot_config = BOT_INFO[is_interactive]
-    res = call_messager(
-        api_token=bot_config["api_token"],
-        chat_id=bot_config["chat_id"],
-        message_text=text,
-        message_link=link,
+async def end_conversation(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Sleeping...Bye!")
+    return ConversationHandler.END
+
+async def _call_ai_fallback(update, context):
+    await update.message.reply_text("Triggered fallback. Conversation ends.")
+    return ConversationHandler.END
+
+BASIC_CHAT = 0
+ORAL_CHAT = 1
+
+def activate_bot():
+    token = os.getenv("MAI_TOKEN")
+    application = Application.builder().token(token).build()
+
+    application.add_handler(CommandHandler("hi", helloworld))
+    
+    application.add_handler(
+        ConversationHandler(
+            entry_points=[
+                CommandHandler("start", reboot_chat),
+                CommandHandler("oral", reboot_oralchat),
+            ],
+            states={
+                BASIC_CHAT: [
+                    MessageHandler(filters.TEXT & ~filters.COMMAND, call_chat),
+                    CommandHandler("start", reboot_chat),
+                    CommandHandler("oral", reboot_oralchat),
+                    CommandHandler("end", end_conversation)
+                ],
+                ORAL_CHAT: [
+                    MessageHandler(filters.VOICE & (~filters.COMMAND), call_oralchat),
+                    CommandHandler("oral", reboot_oralchat),
+                    CommandHandler("start", reboot_chat),
+                    CommandHandler("end", end_conversation)
+                ]
+            },
+            fallbacks=[MessageHandler(filters.TEXT, _call_ai_fallback)],
+            # conversation_timeout=900,  # 15 minutes
+        )
     )
-    return res
+    application.run_polling()
 
 
-@app.on_event("startup")
-def init_scheduler():
-    scheduler.add_job(
-        func=call_nga_bargain_scrapper,
-        trigger="cron",
-        hour=23,
-    )
-    scheduler.start()
-
-
-@app.get(f"/{API_PREFIX}/helloworld")
-def call_helloworld():
-    return test_hello_world()
-
-
-@app.get(f"/{API_PREFIX}/latest_v2ray")
-def call_latest_v2ray():
-    return call_get_latest_v2ray_file()
-
-
-class postCallSendMessage(BaseModel):
-    is_ai: int
-    text: str
-    link: str
-
-
-@app.post(f"/{API_PREFIX}/send_message")
-def call_send_message(item: postCallSendMessage):
-    is_interactive = 0 if item.is_ai == 0 else 1  ## default should be probius
-    text = item.text
-    link = item.link
-    return automatic_forward_message(text, link, is_interactive)
+if __name__ == "__main__":
+    activate_bot()
