@@ -1,8 +1,4 @@
-fastapi==0.78.0
-uvicorn==0.15.0
-python-telegram-bot==20.0
+python-telegram-bot==21.10
 requests==2.25.1
-apscheduler==3.10.0
-beautifulsoup4==4.12.2
-pandas==1.5.3
-# openai==0.27.7 
+openai==1.59.6
+fish-audio-sdk==2025.1.8

@@ -1,4 +1,4 @@
-FROM python:3.8.16-slim-buster
+FROM python:3.12-slim-bullseye
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV LC_ALL=C.UTF-8
@@ -20,6 +20,5 @@ COPY --chmod=777 ./ /home/appuser/project/
 
 RUN pip install -r ./requirements.txt --no-cache-dir && pip cache purge
     
-
-EXPOSE 8000
-CMD ["sh", "-c", "python -m uvicorn main:app --port 8000 & python activate_bot.py"]
+# EXPOSE 8000
+CMD ["python main.py"]

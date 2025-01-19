@@ -16,11 +16,12 @@ __pycache__/
 # MacOS temp file
 *.DS_Store
 
-# temp txt file, for now it is under /barnhouse
-./_barnhouse/*.txt
 
 # any log
 *.log
 
 # private info
 private_vars.py
+*.mp3
+*.wav
+
