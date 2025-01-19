@@ -21,4 +21,4 @@ COPY --chmod=777 ./ /home/appuser/project/
 RUN pip install -r ./requirements.txt --no-cache-dir && pip cache purge
     
 # EXPOSE 8000
-CMD ["python main.py"]
+CMD ["sh", "-c", "python main.py"]
