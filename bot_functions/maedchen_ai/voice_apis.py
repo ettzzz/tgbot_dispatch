@@ -5,6 +5,7 @@ from telegram.ext import ContextTypes
 from telegram import Update
 
 from llm_functions.audio_api import fishAudio as VoiceAgent
+from llm_functions.audio_api import edgeTTS as TTSAgent
 from llm_functions.chat_api import deepseekChat as ChatAgent
 
 rewrite_systemprompt = """
@@ -13,7 +14,7 @@ There could be some oral pauses like "uhm", "ah", and maybe some errors of trans
 Your task is to first identify which language is used in the voice message and second rewrite the text in a more coherent way.
 Your reply should be in JSON format like below:
 {
-    "language": <language_code>, ## for example "en" for English, "zh" for Chinese, "de" for German
+    "language": <language_code>, ## for example "en" for English, "zh" for Chinese, "de" for Germen
     "text": <rewritten text>
 }
 and reply this JSON result only and no other information needed.
@@ -21,12 +22,13 @@ and reply this JSON result only and no other information needed.
 
 oral_systemprompt = """
 You are communicating with a language learner who is practicing oral speaking and listening. 
-You reply should only contain conversational content and no other explainatory information.
-Your conversational content should be in a style of daily conversation instead of formal writing. But you can lead the conversation to a specific topic if you want.
+You reply should only contain conversational texts and no other explainatory information, also don't reply with emojis. 
+Your conversational content should be in a style of daily conversation instead of formal writing. But you can lead the conversation to a specific topic when the user ask to.
 """
 
 
 voice_agent = VoiceAgent()
+tts_agent = TTSAgent()
 voice_chat_agent = ChatAgent(system_prompt=oral_systemprompt.strip())
 rewrite_agent = ChatAgent(system_prompt=rewrite_systemprompt.strip())
 
@@ -53,7 +55,10 @@ async def call_oralchat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         language_code = gate_result.get("language", "en")
         voice_agent.set_tts_model(language_code)
         reply = voice_chat_agent.chat(query)
-        llm_audio_data = voice_agent.tts(reply)
+        if True:
+            llm_audio_data = await tts_agent.tts(reply)
+        else:
+            llm_audio_data = voice_agent.tts(reply) ## TODO: add some params to decide which tts to use
         
         log_msg = f"ASR: {raw_asr}\n\nQuery: {query}\n\nReply: {reply}"
         await update.message.reply_voice(llm_audio_data)

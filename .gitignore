@@ -21,7 +21,7 @@ __pycache__/
 *.log
 
 # private info
-private_vars.py
+secrets.py
 *.mp3
 *.wav
 

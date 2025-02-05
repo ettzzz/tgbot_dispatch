@@ -19,6 +19,10 @@ from telegram.ext import (
     filters,
 )
 
+DEBUG = os.getenv("DEBUG")
+if DEBUG != "0":
+    from configs.secrets import *
+    
 from bot_functions.maedchen_ai.chat_apis import call_chat, reboot_chat
 from bot_functions.maedchen_ai.voice_apis import call_oralchat, reboot_oralchat
 
